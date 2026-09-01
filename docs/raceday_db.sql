@@ -121,3 +121,62 @@ insert into users (email, password_hash, firstname, surname, role, date_of_birth
 ('grace.masondo@gmail.com', 'hashed_password_105', 'Grace', 'Masondo', 'Participant', '1997-04-05', '0745678901', getdate(), 1),
 ('sipho.dlamini@gmail.com', 'hashed_password_106', 'Sipho', 'Dlamini', 'Participant', '1994-08-19', '0824567890', getdate(), 1),
 ('maria.smit@gmail.com', 'hashed_password_107', 'Maria', 'Smit', 'Participant', '1991-10-25', '0835678901', getdate(), 1);
+
+--inserting events
+insert into events (organiser_id, event_name, event_description, event_date, location, distance, event_type, banner_image_url, max_participants, entry_fee, event_status, created_at) values 
+(
+    1,
+    'Comrades Marathon 2026',
+    'The Ultimate Human Race - 90km ultra-marathon from Pietermaritzburg to Durban. This iconic event attracts runners from all over the world.',
+    '2026-06-21 05:30:00',
+    'Pietermaritzburg to Durban, KwaZulu-Natal',
+    90.00,
+    'Run',
+    'https://raceday.blob.core.windows.net/events/comrades-2026.jpg',
+    25000,
+    1500.00,
+    'Upcoming',
+    getdate()
+),
+(
+    1,
+    'Cape Town Cycle Tour 2026',
+    'The world''s largest timed cycling event. A spectacular 109km route around the Cape Peninsula with breathtaking views of the Atlantic Ocean.',
+    '2026-03-08 06:00:00',
+    'Cape Town, Western Cape',
+    109.00,
+    'Cycle',
+    'https://raceday.blob.core.windows.net/events/cycle-tour-2026.jpg',
+    35000,
+    450.00,
+    'Upcoming',
+    getdate()
+),
+(
+    2,
+    'Soweto Marathon 2026',
+    'A vibrant and culturally rich marathon through the streets of Soweto. Celebrating South African heritage, community spirit, and athletic excellence.',
+    '2026-11-01 05:00:00',
+    'Soweto, Gauteng',
+    42.20,
+    'Run',
+    'https://raceday.blob.core.windows.net/events/soweto-2026.jpg',
+    15000,
+    750.00,
+    'Upcoming',
+    getdate()
+),
+(
+    2,
+    'Two Oceans Marathon 2026',
+    'Known as the world''s most beautiful marathon. Takes runners through the stunning Cape Peninsula with views of both the Atlantic and Indian Oceans.',
+    '2026-04-04 05:30:00',
+    'Cape Town, Western Cape',
+    56.00,
+    'Run',
+    'https://raceday.blob.core.windows.net/events/two-oceans-2026.jpg',
+    12000,
+    850.00,
+    'Upcoming',
+    getdate()
+);
