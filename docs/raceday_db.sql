@@ -180,3 +180,34 @@ insert into events (organiser_id, event_name, event_description, event_date, loc
     'Upcoming',
     getdate()
 );
+
+--inserting categories for each event
+-- Categories for Comrades Marathon
+insert into categories (event_id, category_name, cat_description, min_age, max_age, min_distance, max_distance, created_at) values 
+(1, 'Senior Open', 'Open category for all runners', 18, 39, NULL, NULL, getdate()),
+(1, 'Masters 40-49', 'Competitive category for runners aged 40-49', 40, 49, NULL, NULL, getdate()),
+(1, 'Masters 50-59', 'Competitive category for runners aged 50-59', 50, 59, NULL, NULL, getdate()),
+(1, 'Grand Masters 60+', 'Category for runners aged 60 and over', 60, NULL, NULL, NULL, getdate());
+
+-- Categories for Cape Town Cycle Tour
+insert into categories (event_id, category_name, cat_description, min_age, max_age, min_distance, max_distance, created_at) values 
+(2, 'Elite Men', 'Competitive category for professional male cyclists', 18, 40, NULL, NULL, getdate()),
+(2, 'Elite Women', 'Competitive category for professional female cyclists', 18, 40, NULL, NULL, getdate()),
+(2, 'Open Men', 'For male cyclists aged 18-50', 18, 50, NULL, NULL, getdate()),
+(2, 'Open Women', 'For female cyclists aged 18-50', 18, 50, NULL, NULL, getdate()),
+(2, 'Veteran Men', 'For male cyclists aged 51+', 51, 99, NULL, NULL, getdate()),
+(2, 'Veteran Women', 'For female cyclists aged 51+', 51, 99, NULL, NULL, getdate());
+
+-- Categories for Soweto Marathon
+insert into categories (event_id, category_name, cat_description, min_age, max_age, min_distance, max_distance, created_at) values 
+(3, 'Open Men', 'Open category for men', 18, 34, NULL, NULL, getdate()),
+(3, 'Open Women', 'Open category for women', 18, 34, NULL, NULL, getdate()),
+(3, 'Veteran Men', 'Veteran category for men 35+', 35, NULL, NULL, NULL, getdate()),
+(3, 'Veteran Women', 'Veteran category for women 35+', 35, NULL, NULL, NULL, getdate());
+
+-- Categories for Two Oceans Marathon
+insert into categories (event_id, category_name, cat_description, min_age, max_age, min_distance, max_distance, created_at) values 
+(4, 'Senior Men', 'Open category for men', 20, 39, NULL, NULL, getdate()),
+(4, 'Senior Women', 'Open category for women', 20, 39, NULL, NULL, getdate()),
+(4, 'Masters Men', 'Masters category for men 40+', 40, NULL, NULL, NULL, getdate()),
+(4, 'Masters Women', 'Masters category for women 40+', 40, NULL, NULL, NULL, getdate());
