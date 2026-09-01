@@ -211,3 +211,39 @@ insert into categories (event_id, category_name, cat_description, min_age, max_a
 (4, 'Senior Women', 'Open category for women', 20, 39, NULL, NULL, getdate()),
 (4, 'Masters Men', 'Masters category for men 40+', 40, NULL, NULL, NULL, getdate()),
 (4, 'Masters Women', 'Masters category for women 40+', 40, NULL, NULL, NULL, getdate());
+
+--inserting enrolments
+--enrolments for Comrades Marathon
+insert into enrolments (participant_id, event_id, category_id, enrolment_date, enr_status, payment_status, payment_amount, comments) values 
+(3, 1, 1, dateadd(day, -45, getdate()), 'Confirmed', 'Paid', 1500.00, 'Training for first ultra'),
+(4, 1, 2, dateadd(day, -40, getdate()), 'Confirmed', 'Paid', 1500.00, NULL),
+(5, 1, 1, dateadd(day, -35, getdate()), 'Pending', 'Pending', 1500.00, 'Awaiting medical clearance'),
+(6, 1, 3, dateadd(day, -30, getdate()), 'Withdrawn', 'Refunded', 1500.00, 'Withdrew due to injury'),
+(7, 1, 2, dateadd(day, -25, getdate()), 'Confirmed', 'Paid', 1500.00, NULL),
+(8, 1, 4, dateadd(day, -20, getdate()), 'Pending', 'Pending', 1500.00, 'First Comrades');
+
+--enrolments for Cape Town Cycle Tour
+insert into enrolments (participant_id, event_id, category_id, enrolment_date, enr_status, payment_status, payment_amount, comments) values 
+(3, 2, 3, dateadd(day, -60, getdate()), 'Confirmed', 'Paid', 450.00, 'Cycling with club team'),
+(4, 2, 4, dateadd(day, -55, getdate()), 'Confirmed', 'Paid', 450.00, NULL),
+(5, 2, 3, dateadd(day, -50, getdate()), 'Confirmed', 'Paid', 450.00, 'Ready for the challenge'),
+(7, 2, 5, dateadd(day, -45, getdate()), 'Pending', 'Pending', 450.00, NULL),
+(8, 2, 6, dateadd(day, -40, getdate()), 'Confirmed', 'Paid', 450.00, 'Cycling with friends');
+
+--enrolments for Soweto Marathon
+insert into enrolments (participant_id, event_id, category_id, enrolment_date, enr_status, payment_status, payment_amount, comments) values 
+(3, 3, 1, dateadd(day, -30, getdate()), 'Confirmed', 'Paid', 750.00, 'Running for charity'),
+(4, 3, 2, dateadd(day, -28, getdate()), 'Confirmed', 'Paid', 750.00, NULL),
+(5, 3, 3, dateadd(day, -25, getdate()), 'Pending', 'Pending', 750.00, 'First Soweto marathon'),
+(6, 3, 1, dateadd(day, -20, getdate()), 'Confirmed', 'Paid', 750.00, 'Ready to race'),
+(7, 3, 4, dateadd(day, -15, getdate()), 'Confirmed', 'Paid', 750.00, NULL),
+(8, 3, 3, dateadd(day, -10, getdate()), 'Pending', 'Pending', 750.00, 'Last minute entry');
+
+--enrolments for Two Oceans Marathon
+insert into enrolments (participant_id, event_id, category_id, enrolment_date, enr_status, payment_status, payment_amount, comments) values 
+(3, 4, 1, dateadd(day, -90, getdate()), 'Confirmed', 'Paid', 850.00, 'Training going well'),
+(4, 4, 2, dateadd(day, -85, getdate()), 'Confirmed', 'Paid', 850.00, NULL),
+(5, 4, 3, dateadd(day, -80, getdate()), 'Confirmed', 'Paid', 850.00, 'Running with running club'),
+(6, 4, 1, dateadd(day, -75, getdate()), 'Pending', 'Pending', 850.00, 'Awaiting confirmation'),
+(7, 4, 4, dateadd(day, -70, getdate()), 'Confirmed', 'Paid', 850.00, NULL),
+(8, 4, 3, dateadd(day, -65, getdate()), 'Confirmed', 'Paid', 850.00, 'Excited for the race');
