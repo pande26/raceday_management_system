@@ -104,3 +104,11 @@ uploaded_by int not null,
 foreign key (event_id) references events(event_id),
 foreign key (uploaded_by) references users(user_id)
 );
+
+--inserting data into the tables 
+--inserting orgernisers
+insert into users (email, password_hash, firstname, surname, role, date_of_birth, phone_number, created_at, is_active) values 
+('thabo.mokoena@raceday.co.za', 'hashed_password_123', 'Thabo', 'Mokoena', 'Organiser', '1985-03-15', '0821234567', getdate(), 1),
+('sarah.van.der.merwe@raceday.co.za', 'hashed_password_456', 'Sarah', 'Van Der Merwe', 'Organiser', '1990-07-22', '0839876543', getdate(), 1);
+
+
