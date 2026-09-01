@@ -20,7 +20,7 @@ updated_at datetime null,
 is_active bit not null default 1
 );
 
---creating the events table
+--creating the events table that stores event/race information
 create table events(
 event_id int primary key identity(1,1),
 organiser_id int not null,
@@ -39,7 +39,7 @@ updated_at datetime null,
 foreign key (organiser_id) references users(user_id)
 );
 
---creating the categories table
+--creating the categories table to stores age/distance categories for events
 create table categories(
 category_id int primary key identity(1,1),
 event_id int not null,
@@ -53,7 +53,7 @@ created_at datetime not null default getdate(),
 foreign key (event_id) references events(event_id)
 );
 
---created the enrolments
+--created the enrolments that stores participant event registrations
 create table enrolments(
 enrolment_id int primary key identity(1,1),
 participant_id int not null,
@@ -68,4 +68,26 @@ updated_at datetime null,
 foreign key (participant_id) references users(user_id),
 foreign key (event_id) references events(event_id),
 foreign key (category_id) references categories(category_id)
+);
+
+--created the results table to stores race results for participants
+create table results(
+result_id int primary key identity(1,1),
+enrolment_id int not null unique,
+event_id int not null,
+participant_id int not null,
+finish_time time(3) not null,
+overall_position int not null,
+category_position int null,
+total_finishers int not null,
+category_total int null,
+is_disqualified bit not null default 0,
+disqualification_reason varchar(200) null,
+recorded_by int not null,
+recorded_at datetime not null default getdate(),
+updated_at datetime null,
+foreign key (enrolment_id) references enrolments(enrolment_id),
+foreign key (event_id) references events(event_id),
+foreign key (participant_id) references users(user_id),
+foreign key (recorded_by) references users(user_id)
 );
