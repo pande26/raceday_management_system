@@ -273,3 +273,14 @@ insert into results (enrolment_id, event_id, participant_id, finish_time, overal
 (17, 4, 4, '05:45:12.000', 289, 78, 9500, 2000, 0, NULL, 2, dateadd(day, 4, getdate())),
 (18, 4, 5, '04:58:47.000', 134, 28, 9500, 2000, 0, NULL, 2, dateadd(day, 4, getdate())),
 (20, 4, 7, '06:15:30.000', 456, 89, 9500, 2000, 0, NULL, 2, dateadd(day, 4, getdate()));
+
+--inserting event_images
+insert into event_images (event_id, image_url, is_primary, caption, uploaded_at, uploaded_by) values 
+(1, 'https://raceday.blob.core.windows.net/gallery/comrades-start.jpg', 1, 'Comrades Marathon start line at Pietermaritzburg', getdate(), 1),
+(1, 'https://raceday.blob.core.windows.net/gallery/comrades-finish.jpg', 0, 'Finishers at Durban City Hall', getdate(), 1),
+(2, 'https://raceday.blob.core.windows.net/gallery/cycle-tour-start.jpg', 1, 'Mass start at Cape Town Stadium', getdate(), 1),
+(2, 'https://raceday.blob.core.windows.net/gallery/cycle-tour-chapmans.jpg', 0, 'Cyclists along Chapmans Peak Drive', getdate(), 1),
+(3, 'https://raceday.blob.core.windows.net/gallery/soweto-start.jpg', 1, 'Vibrant start in Soweto', getdate(), 2),
+(3, 'https://raceday.blob.core.windows.net/gallery/soweto-crowd.jpg', 0, 'Supportive crowds cheering runners', getdate(), 2),
+(4, 'https://raceday.blob.core.windows.net/gallery/two-oceans-start.jpg', 1, 'Starting line at Newlands', getdate(), 2),
+(4, 'https://raceday.blob.core.windows.net/gallery/two-oceans-view.jpg', 0, 'Scenic views along the Cape coastline', getdate(), 2);
