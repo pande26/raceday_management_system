@@ -247,3 +247,29 @@ insert into enrolments (participant_id, event_id, category_id, enrolment_date, e
 (6, 4, 1, dateadd(day, -75, getdate()), 'Pending', 'Pending', 850.00, 'Awaiting confirmation'),
 (7, 4, 4, dateadd(day, -70, getdate()), 'Confirmed', 'Paid', 850.00, NULL),
 (8, 4, 3, dateadd(day, -65, getdate()), 'Confirmed', 'Paid', 850.00, 'Excited for the race');
+
+--inserting results
+--results for Comrades Marathon
+insert into results (enrolment_id, event_id, participant_id, finish_time, overall_position, category_position, total_finishers, category_total, is_disqualified, disqualification_reason, recorded_by, recorded_at) values 
+(1, 1, 3, '07:15:22.000', 125, 28, 18500, 4500, 0, NULL, 1, dateadd(day, 1, getdate())),
+(2, 1, 4, '08:12:45.000', 345, 89, 18500, 4500, 0, NULL, 1, dateadd(day, 1, getdate())),
+(5, 1, 7, '09:28:15.000', 678, 156, 18500, 4500, 0, NULL, 1, dateadd(day, 1, getdate()));
+
+--results for Cape Town Cycle Tour
+insert into results (enrolment_id, event_id, participant_id, finish_time, overall_position, category_position, total_finishers, category_total, is_disqualified, disqualification_reason, recorded_by, recorded_at) values 
+(7, 2, 3, '03:45:30.000', 1245, 87, 24000, 4500, 0, NULL, 1, dateadd(day, 2, getdate())),
+(8, 2, 4, '04:12:45.000', 3456, 234, 24000, 4500, 0, NULL, 1, dateadd(day, 2, getdate())),
+(10, 2, 8, '05:22:15.000', 5678, 456, 24000, 4500, 0, NULL, 1, dateadd(day, 2, getdate()));
+
+--results for Soweto Marathon
+insert into results (enrolment_id, event_id, participant_id, finish_time, overall_position, category_position, total_finishers, category_total, is_disqualified, disqualification_reason, recorded_by, recorded_at) values 
+(12, 3, 3, '03:56:15.000', 78, 15, 12000, 3200, 0, NULL, 2, dateadd(day, 3, getdate())),
+(13, 3, 4, '04:10:32.000', 156, 42, 12000, 3200, 0, NULL, 2, dateadd(day, 3, getdate())),
+(15, 3, 7, '05:45:12.000', 567, 89, 12000, 3200, 0, NULL, 2, dateadd(day, 3, getdate()));
+
+--results for Two Oceans Marathon
+insert into results (enrolment_id, event_id, participant_id, finish_time, overall_position, category_position, total_finishers, category_total, is_disqualified, disqualification_reason, recorded_by, recorded_at) values 
+(16, 4, 3, '05:12:30.000', 156, 34, 9500, 2000, 0, NULL, 2, dateadd(day, 4, getdate())),
+(17, 4, 4, '05:45:12.000', 289, 78, 9500, 2000, 0, NULL, 2, dateadd(day, 4, getdate())),
+(18, 4, 5, '04:58:47.000', 134, 28, 9500, 2000, 0, NULL, 2, dateadd(day, 4, getdate())),
+(20, 4, 7, '06:15:30.000', 456, 89, 9500, 2000, 0, NULL, 2, dateadd(day, 4, getdate()));
