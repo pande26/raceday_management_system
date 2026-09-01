@@ -91,3 +91,16 @@ foreign key (event_id) references events(event_id),
 foreign key (participant_id) references users(user_id),
 foreign key (recorded_by) references users(user_id)
 );
+
+--creating the event_images table that stores additional event images
+create table event_images(
+image_id int primary key identity(1,1),
+event_id int not null,
+image_url varchar(500) not null,
+is_primary bit not null default 0,
+caption varchar(200) null,
+uploaded_at datetime not null default getdate(),
+uploaded_by int not null,
+foreign key (event_id) references events(event_id),
+foreign key (uploaded_by) references users(user_id)
+);
