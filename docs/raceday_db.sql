@@ -38,3 +38,17 @@ created_at datetime not null default getdate(),
 updated_at datetime null,
 foreign key (organiser_id) references users(user_id)
 );
+
+--creating the categories table
+create table categories(
+category_id int primary key identity(1,1),
+event_id int not null,
+category_name varchar(50) not null,
+cat_description varchar(200) null,
+min_age int null,
+max_age int null,
+min_distance decimal(5,2) null,
+max_distance decimal(5,2) null,
+created_at datetime not null default getdate(),
+foreign key (event_id) references events(event_id)
+);
