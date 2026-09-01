@@ -111,4 +111,13 @@ insert into users (email, password_hash, firstname, surname, role, date_of_birth
 ('thabo.mokoena@raceday.co.za', 'hashed_password_123', 'Thabo', 'Mokoena', 'Organiser', '1985-03-15', '0821234567', getdate(), 1),
 ('sarah.van.der.merwe@raceday.co.za', 'hashed_password_456', 'Sarah', 'Van Der Merwe', 'Organiser', '1990-07-22', '0839876543', getdate(), 1);
 
-
+--inserting participants
+insert into users (email, password_hash, firstname, surname, role, date_of_birth, phone_number, created_at, is_active) values 
+('david.nkosi@gmail.com', 'hashed_password_789', 'David', 'Nkosi', 'Participant', '1992-11-10', '0734567890', getdate(), 1),
+('lindiwe.mthembu@gmail.com', 'hashed_password_101', 'Lindiwe', 'Mthembu', 'Participant', '1995-05-28', '0781234567', getdate(), 1),
+('pieter.du.toit@gmail.com', 'hashed_password_102', 'Pieter', 'Du Toit', 'Participant', '1988-09-02', '0723456789', getdate(), 1),
+('zanele.khumalo@gmail.com', 'hashed_password_103', 'Zanele', 'Khumalo', 'Participant', '1993-12-14', '0712345678', getdate(), 1),
+('james.oosthuizen@gmail.com', 'hashed_password_104', 'James', 'Oosthuizen', 'Participant', '1990-06-30', '0798765432', getdate(), 1),
+('grace.masondo@gmail.com', 'hashed_password_105', 'Grace', 'Masondo', 'Participant', '1997-04-05', '0745678901', getdate(), 1),
+('sipho.dlamini@gmail.com', 'hashed_password_106', 'Sipho', 'Dlamini', 'Participant', '1994-08-19', '0824567890', getdate(), 1),
+('maria.smit@gmail.com', 'hashed_password_107', 'Maria', 'Smit', 'Participant', '1991-10-25', '0835678901', getdate(), 1);
