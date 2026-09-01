@@ -52,3 +52,20 @@ max_distance decimal(5,2) null,
 created_at datetime not null default getdate(),
 foreign key (event_id) references events(event_id)
 );
+
+--created the enrolments
+create table enrolments(
+enrolment_id int primary key identity(1,1),
+participant_id int not null,
+event_id int not null,
+category_id int not null,
+enrolment_date datetime not null default getdate(),
+enr_status varchar(20) not null default 'Pending' check (enr_status in ('Pending', 'Confirmed', 'Completed', 'Withdrawn')),
+payment_status varchar(20) null default 'Pending' check (payment_status in ('Pending', 'Paid', 'Refunded')),
+payment_amount decimal(10,2) null,
+comments varchar(500) null,
+updated_at datetime null,
+foreign key (participant_id) references users(user_id),
+foreign key (event_id) references events(event_id),
+foreign key (category_id) references categories(category_id)
+);
