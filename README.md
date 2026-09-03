@@ -57,7 +57,6 @@ RaceDay/
 4. **Enrolments** - Participant registrations
 5. **Results** - Race results and finishing positions
 6. **Event_Images** - Gallery images for events
-7. **Profiles** - User personal information (optional)
 
 ### ERD Highlights
 - ✅ Minimum 6 entities included
