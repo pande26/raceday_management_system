@@ -1,0 +1,150 @@
+name: CI/CD Pipeline - RaceDay Part 1
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-docs:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Check docs folder exists
+      run: |
+        if [ -d "docs" ]; then
+          echo "✅ docs folder exists"
+        else
+          echo "❌ docs folder not found"
+          exit 1
+        fi
+    
+    - name: Check ERD exists
+      run: |
+        if [ -f "docs/ERD.jpeg" ] || [ -f "docs/ERD.png" ] || [ -f "docs/ERD.pdf" ]; then
+          echo "✅ ERD file found"
+        else
+          echo "❌ ERD file not found (expected: ERD.jpeg, ERD.png, or ERD.pdf)"
+          exit 1
+        fi
+    
+    - name: Check API Endpoint Plan exists
+      run: |
+        if [ -f "docs/API-ENDPOINT-PLAN.pdf" ] || [ -f "docs/API-ENDPOINT-PLAN.md" ]; then
+          echo "✅ API Endpoint Plan found"
+        else
+          echo "❌ API Endpoint Plan not found (expected: API-ENDPOINT-PLAN.pdf or .md)"
+          exit 1
+        fi
+    
+    - name: Check SQL Script exists
+      run: |
+        if [ -f "docs/raceday_db.sql" ]; then
+          echo "✅ SQL Script found"
+        else
+          echo "❌ SQL Script not found (expected: raceday_db.sql)"
+          exit 1
+        fi
+    
+    - name: Check README exists
+      run: |
+        if [ -f "README.md" ]; then
+          echo "✅ README.md found"
+        else
+          echo "❌ README.md not found"
+          exit 1
+        fi
+    
+    - name: Check README contains required sections
+      run: |
+        if grep -q "system description\|role" README.md; then
+          echo "✅ README contains system description"
+        else
+          echo "⚠️ README may be missing system description"
+        fi
+        
+        if grep -q "CI/CD\|green build" README.md; then
+          echo "✅ README contains CI/CD section"
+        else
+          echo "⚠️ README may be missing CI/CD section"
+        fi
+        
+        if grep -q "youtube.com\|video" README.md; then
+          echo "✅ README contains video link"
+        else
+          echo "⚠️ README may be missing video link"
+        fi
+    
+    - name: Check workflow file exists
+      run: |
+        if [ -f ".github/workflows/ci-cd.yml" ]; then
+          echo "✅ CI/CD workflow file found"
+        else
+          echo "❌ CI/CD workflow file not found"
+          exit 1
+        fi
+    
+    - name: Validate SQL script syntax (basic check)
+      run: |
+        if grep -q "CREATE TABLE" docs/raceday_db.sql; then
+          echo "✅ SQL script contains CREATE TABLE statements"
+        else
+          echo "❌ SQL script missing CREATE TABLE statements"
+          exit 1
+        fi
+        
+        if grep -q "INSERT INTO" docs/raceday_db.sql; then
+          echo "✅ SQL script contains seed data (INSERT statements)"
+        else
+          echo "⚠️ SQL script may be missing seed data"
+        fi
+    
+    - name: Count entities in SQL script
+      run: |
+        TABLE_COUNT=$(grep -c "CREATE TABLE" docs/raceday_db.sql || true)
+        echo "📊 Found $TABLE_COUNT tables in SQL script"
+        if [ $TABLE_COUNT -ge 6 ]; then
+          echo "✅ SQL script has minimum 6 tables"
+        else
+          echo "❌ SQL script has less than 6 tables (minimum required)"
+          exit 1
+        fi
+    
+    - name: Check commit count (warning only)
+      run: |
+        COMMIT_COUNT=$(git rev-list --count HEAD)
+        echo "📊 Total commits: $COMMIT_COUNT"
+        if [ $COMMIT_COUNT -ge 20 ]; then
+          echo "✅ Minimum 20 commits achieved"
+        else
+          echo "⚠️ Only $COMMIT_COUNT commits so far (minimum 20 required for Part 1)"
+        fi
+    
+    - name: Validation Summary
+      run: |
+        echo "=========================================="
+        echo "✅ CI/CD VALIDATION COMPLETE"
+        echo "=========================================="
+        echo "📁 docs folder: ✅"
+        echo "📄 ERD file: ✅"
+        echo "📄 API Endpoint Plan: ✅"
+        echo "📄 SQL Script: ✅"
+        echo "📄 README.md: ✅"
+        echo "📄 CI/CD Workflow: ✅"
+        echo "=========================================="
+        echo "✅ All required files present!"
+        echo "✅ Part 1 is ready for submission!"
+        echo "=========================================="
+    
+    - name: Upload validation results
+      uses: actions/upload-artifact@v3
+      with:
+        name: validation-results
+        path: |
+          README.md
+          docs/
+        if-no-files-found: ignore
