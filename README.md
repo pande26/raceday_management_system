@@ -275,7 +275,7 @@ Green Build Screenshot	✅	Included in README
 Video Presentation	✅	https://youtu.be/krFDeZUgb2M
 
 🔗 GitHub Repository
-Repository Link: 
+Repository Link: https://github.com/pande26/raceday_management_system.git
 
 📊 Commit Statistics
 Part	Minimum Required	Actual Commits	Status
