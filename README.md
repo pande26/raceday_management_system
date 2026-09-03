@@ -256,5 +256,45 @@ Figure: Successful CI/CD pipeline validation showing all checks passed
 
 🎥 Video Presentation
 Part 1 - System Planning and Database
-YouTube Link:
+YouTube Link: https://youtu.be/krFDeZUgb2M
 
+Video Content Overview
+📊 ERD Walkthrough: Explanation of 6 entities, relationships, and design decisions
+📝 API Endpoint Plan: Overview of all 38 endpoints and role-based access
+🗄️ SQL Script Demonstration: Live execution in SSMS
+✅ Validation: Verification of all required components
+
+📚 Part 1 Deliverables Checklist
+Deliverable	Status	Location
+Entity Relationship Diagram	✅	/docs/ERD.png
+API Endpoint Plan	✅	/docs/API-ENDPOINT-PLAN.pdf
+SQL Database Script	✅	/docs/raceday_db.sql
+README.md	✅	/README.md
+CI/CD Workflow	✅	/.github/workflows/ci-cd.yml
+Green Build Screenshot	✅	Included in README
+Video Presentation	✅	https://youtu.be/krFDeZUgb2M
+
+🔗 GitHub Repository
+Repository Link: 
+
+📊 Commit Statistics
+Part	Minimum Required	Actual Commits	Status
+Part 1	20	25+	✅
+🛠️ Technology Stack (Full Project)
+Layer	Technology
+Frontend	ASP.NET Core MVC, Bootstrap
+Backend API	ASP.NET Core Web API (C#)
+ORM	Entity Framework Core (Code-First)
+Database	SQL Server (SSMS)
+Cloud Storage	Azure Blob Storage
+Testing	xUnit/NUnit Unit Tests
+CI/CD	GitHub Actions
+Containerization	Docker
+
+📝 Version History
+Version	Date	Changes
+1.0	2026-09-03	Initial Part 1 submission
+
+👨‍💻 Author
+Pandelani
+GitHub: @pande26
