@@ -25,19 +25,19 @@ jobs:
     
     - name: Check ERD exists
       run: |
-        if [ -f "docs/ERD.jpeg" ] || [ -f "docs/ERD.png" ] || [ -f "docs/ERD.pdf" ]; then
+        if [ -f "docs/ERD.png" ] || [ -f "docs/ERD.jpeg" ] || [ -f "docs/ERD.pdf" ]; then
           echo "✅ ERD file found"
         else
-          echo "❌ ERD file not found (expected: ERD.jpeg, ERD.png, or ERD.pdf)"
+          echo "❌ ERD file not found (expected: ERD.png, ERD.jpeg, or ERD.pdf)"
           exit 1
         fi
     
     - name: Check API Endpoint Plan exists
       run: |
-        if [ -f "docs/API-ENDPOINT-PLAN.pdf" ] || [ -f "docs/API-ENDPOINT-PLAN.md" ]; then
+        if [ -f "docs/API-ENDPOINT-PLAN.pdf" ] || [ -f "docs/API-ENDPOINT-PLAN.md" ] || [ -f "docs/API ENDPOINT PLAN.pdf" ]; then
           echo "✅ API Endpoint Plan found"
         else
-          echo "❌ API Endpoint Plan not found (expected: API-ENDPOINT-PLAN.pdf or .md)"
+          echo "❌ API Endpoint Plan not found (expected: API-ENDPOINT-PLAN.pdf, API-ENDPOINT-PLAN.md, or API ENDPOINT PLAN.pdf)"
           exit 1
         fi
     
@@ -139,12 +139,3 @@ jobs:
         echo "✅ All required files present!"
         echo "✅ Part 1 is ready for submission!"
         echo "=========================================="
-    
-    - name: Upload validation results
-      uses: actions/upload-artifact@v4
-      with:
-        name: validation-results
-        path: |
-          README.md
-          docs/
-        if-no-files-found: ignore
