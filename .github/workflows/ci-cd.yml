@@ -28,16 +28,16 @@ jobs:
         if [ -f "docs/ERD.png" ] || [ -f "docs/ERD.jpeg" ] || [ -f "docs/ERD.pdf" ]; then
           echo "✅ ERD file found"
         else
-          echo "❌ ERD file not found (expected: ERD.png, ERD.jpeg, or ERD.pdf)"
+          echo "❌ ERD file not found"
           exit 1
         fi
     
     - name: Check API Endpoint Plan exists
       run: |
-        if [ -f "docs/API-ENDPOINT-PLAN.pdf" ] || [ -f "docs/API-ENDPOINT-PLAN.md" ] || [ -f "docs/API ENDPOINT PLAN.pdf" ]; then
+        if [ -f "docs/API-ENDPOINT-PLAN.pdf" ] || [ -f "docs/API-ENDPOINT-PLAN.md" ]; then
           echo "✅ API Endpoint Plan found"
         else
-          echo "❌ API Endpoint Plan not found (expected: API-ENDPOINT-PLAN.pdf, API-ENDPOINT-PLAN.md, or API ENDPOINT PLAN.pdf)"
+          echo "❌ API Endpoint Plan not found"
           exit 1
         fi
     
@@ -46,7 +46,7 @@ jobs:
         if [ -f "docs/raceday_db.sql" ]; then
           echo "✅ SQL Script found"
         else
-          echo "❌ SQL Script not found (expected: raceday_db.sql)"
+          echo "❌ SQL Script not found"
           exit 1
         fi
     
@@ -90,14 +90,18 @@ jobs:
     
     - name: Validate SQL script syntax (basic check)
       run: |
-        if grep -q "CREATE TABLE" docs/raceday_db.sql; then
+        # Check for CREATE TABLE (case insensitive, allow spaces)
+        if grep -iE "CREATE\s+TABLE" docs/raceday_db.sql > /dev/null; then
           echo "✅ SQL script contains CREATE TABLE statements"
         else
           echo "❌ SQL script missing CREATE TABLE statements"
+          echo "Showing first 20 lines of SQL file:"
+          head -20 docs/raceday_db.sql
           exit 1
         fi
         
-        if grep -q "INSERT INTO" docs/raceday_db.sql; then
+        # Check for INSERT INTO
+        if grep -iE "INSERT\s+INTO" docs/raceday_db.sql > /dev/null; then
           echo "✅ SQL script contains seed data (INSERT statements)"
         else
           echo "⚠️ SQL script may be missing seed data"
@@ -105,7 +109,7 @@ jobs:
     
     - name: Count entities in SQL script
       run: |
-        TABLE_COUNT=$(grep -c "CREATE TABLE" docs/raceday_db.sql || true)
+        TABLE_COUNT=$(grep -ciE "CREATE\s+TABLE" docs/raceday_db.sql || true)
         echo "📊 Found $TABLE_COUNT tables in SQL script"
         if [ $TABLE_COUNT -ge 6 ]; then
           echo "✅ SQL script has minimum 6 tables"
@@ -128,13 +132,6 @@ jobs:
       run: |
         echo "=========================================="
         echo "✅ CI/CD VALIDATION COMPLETE"
-        echo "=========================================="
-        echo "📁 docs folder: ✅"
-        echo "📄 ERD file: ✅"
-        echo "📄 API Endpoint Plan: ✅"
-        echo "📄 SQL Script: ✅"
-        echo "📄 README.md: ✅"
-        echo "📄 CI/CD Workflow: ✅"
         echo "=========================================="
         echo "✅ All required files present!"
         echo "✅ Part 1 is ready for submission!"
