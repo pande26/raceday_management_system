@@ -1,0 +1,6 @@
+@raceday_management_system_HostAddress = http://localhost:5138
+
+GET {{raceday_management_system_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
