@@ -179,9 +179,7 @@ namespace raceday_management_system.Database
 
         }//end of get_user_by_email()
 
-        // ============================================================
-        // method to update the last login timestamp
-        // ============================================================
+        //method to update the last login timestamp
         public void update_last_login(int user_id)
         {//start of update_last_login()
 
