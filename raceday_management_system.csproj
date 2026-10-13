@@ -14,4 +14,13 @@
 		<PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
 	</ItemGroup>
 
+	<!-- Exclude the test project folder and build output from this project's compilation -->
+	<ItemGroup>
+		<Compile Remove="raceday_management_system.Tests/**" />
+		<Content Remove="raceday_management_system.Tests/**" />
+		<None Remove="raceday_management_system.Tests/**" />
+		<Compile Remove="obj/**" />
+		<Compile Remove="bin/**" />
+	</ItemGroup>
+
 </Project>
