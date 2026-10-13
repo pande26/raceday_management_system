@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<auth_connection>();
 builder.Services.AddScoped<users_connection>();
 builder.Services.AddScoped<events_connection>();
+builder.Services.AddScoped<categories_connection>();
 
 //register services
 builder.Services.AddScoped<password_hasher>();
