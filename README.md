@@ -347,7 +347,7 @@ raceday_management_system.Tests/
 
 ### Test Results
 
-![Tests Passing](docs/test-results.png)
+![Tests Passing](docs/test-results1.png)
 
 **Local test run:** `Test summary: total: 18, failed: 0, succeeded: 18, skipped: 0`
 
