@@ -4,13 +4,15 @@ using raceday_management_system.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//register services for authentication
-builder.Services.AddScoped<password_hasher>();
+//register database helpers
 builder.Services.AddScoped<auth_connection>();
+builder.Services.AddScoped<users_connection>();
 
-//configure session services
+//register services
+builder.Services.AddScoped<password_hasher>();
+
+//configure session
 builder.Services.AddDistributedMemoryCache();
-
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -31,7 +33,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-//configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -39,12 +40,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-//enable session middleware
 app.UseSession();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
