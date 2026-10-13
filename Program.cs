@@ -1,15 +1,37 @@
+using System.Text.Json.Serialization;
+using raceday_management_system.Database;
+using raceday_management_system.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//register services for authentication
+builder.Services.AddScoped<password_hasher>();
+builder.Services.AddScoped<auth_connection>();
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+//configure session services
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+//add controllers with enum-as-string support
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+//configure swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -17,6 +39,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+//enable session middleware
+app.UseSession();
 
 app.UseAuthorization();
 
