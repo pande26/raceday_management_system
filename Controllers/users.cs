@@ -10,10 +10,8 @@ namespace raceday_management_system.Controllers
     public class users : ControllerBase
     {//start of class
 
-        //dependencies
         private readonly users_connection _db;
 
-        //constructor
         public users(users_connection db)
         {//start of constructor
 
@@ -21,7 +19,6 @@ namespace raceday_management_system.Controllers
 
         }//end of constructor
 
-        //helper method to get logged-in user's id
         private int? get_logged_in_user_id()
         {//start of get_logged_in_user_id()
 
@@ -52,30 +49,27 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
+            //return without the password_hash
             return Ok(new
             {
-                user_id = user["user_id"],
-                email = user["email"],
-                firstname = user["firstname"],
-                surname = user["surname"],
-                role = user["role"],
-                profile_picture_url = user["profile_picture_url"],
-                date_of_birth = user["date_of_birth"],
-                phone_number = user["phone_number"],
-                created_at = user["created_at"],
-                updated_at = user["updated_at"],
-                is_active = user["is_active"]
+                user_id = user.User_id,
+                email = user.Email,
+                firstname = user.Firstname,
+                surname = user.Surname,
+                role = user.Role,
+                profile_picture_url = user.Profile_picture_url,
+                date_of_birth = user.Date_of_birth,
+                phone_number = user.Phone_number,
+                created_at = user.Created_at,
+                updated_at = user.Updated_at,
+                is_active = user.Is_active
             });
 
         }//end of get_own_profile()
 
         //PUT /api/users/profile
         [HttpPut("profile")]
-        public IActionResult update_own_profile(
-            string firstname,
-            string surname,
-            string? phoneNumber = null,
-            DateOnly? dateOfBirth = null)
+        public IActionResult update_own_profile(string firstname, string surname, string? phoneNumber = null, DateOnly? dateOfBirth = null)
         {//start of update_own_profile()
 
             var user_id = get_logged_in_user_id();
@@ -88,12 +82,7 @@ namespace raceday_management_system.Controllers
             }//end of if
 
             string message = _db.update_user_profile(
-                user_id.Value,
-                firstname,
-                surname,
-                phoneNumber,
-                dateOfBirth
-            );
+                user_id.Value, firstname, surname, phoneNumber, dateOfBirth);
 
             if (message.Contains("Error"))
             {//start of if
@@ -173,11 +162,11 @@ namespace raceday_management_system.Controllers
 
             return Ok(new
             {
-                user_id = user["user_id"],
-                firstname = user["firstname"],
-                surname = user["surname"],
-                role = user["role"],
-                profile_picture_url = user["profile_picture_url"]
+                user_id = user.User_id,
+                firstname = user.Firstname,
+                surname = user.Surname,
+                role = user.Role,
+                profile_picture_url = user.Profile_picture_url
             });
 
         }//end of get_user_public_profile()

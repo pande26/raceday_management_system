@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 //register database helpers
 builder.Services.AddScoped<auth_connection>();
 builder.Services.AddScoped<users_connection>();
+builder.Services.AddScoped<events_connection>();
 
 //register services
 builder.Services.AddScoped<password_hasher>();
@@ -20,14 +21,12 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-//add controllers with enum-as-string support
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-//configure swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

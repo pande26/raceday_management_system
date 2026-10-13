@@ -1,60 +1,64 @@
 ﻿using System.Data.SqlClient;
+using raceday_management_system.Models;
 
 namespace raceday_management_system.Database
 {//start of namespace
     public class users_connection
     {//start of class
 
-        //connection string to connect to the raceday_db
         private readonly string connection_string = @"Data source=(localdb)\api_raceday;Database=raceday_db;Trusted_Connection=True;TrustServerCertificate=True;";
 
-        //method to fetch a user's full profile by user_id
-        public Dictionary<string, object>? get_user_profile(int user_id)
+        //method to fetch a user's full profile
+        public Users? get_user_profile(int user_id)
         {//start of get_user_profile()
 
-            //try and catch
             try
             {//start of try
 
-                //using the "using" method to prevent memory leaks
                 using (SqlConnection connect = new SqlConnection(connection_string))
                 {//start of using
 
-                    //open the connection
                     connect.Open();
 
-                    //query
-                    string query = @"select user_id, email, firstname, surname, role, 
+                    string query = @"select user_id, email, password_hash, firstname, surname, role, 
                                             profile_picture_url, date_of_birth, phone_number, 
                                             created_at, updated_at, is_active 
                                      from users 
                                      where user_id = @UserId";
 
-                    //creating an instance to run the query
                     using (SqlCommand cmd = new SqlCommand(query, connect))
                     {//start of using
 
                         cmd.Parameters.AddWithValue("@UserId", user_id);
 
-                        //run reader
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {//start of using
 
                             if (reader.Read())
                             {//start of if
 
-                                var row = new Dictionary<string, object>();
-                                for (int i = 0; i < reader.FieldCount; i++)
-                                {//start of for
-
-                                    row[reader.GetName(i)] = reader.IsDBNull(i)
-                                        ? null!
-                                        : reader.GetValue(i);
-
-                                }//end of for
+                                var user = new Users
+                                {
+                                    User_id = Convert.ToInt32(reader["user_id"]),
+                                    Email = reader["email"].ToString() ?? "",
+                                    Password_hash = reader["password_hash"].ToString() ?? "",
+                                    Firstname = reader["firstname"].ToString() ?? "",
+                                    Surname = reader["surname"].ToString() ?? "",
+                                    Role = reader["role"].ToString() ?? "",
+                                    Profile_picture_url = reader["profile_picture_url"] == DBNull.Value ? null : reader["profile_picture_url"].ToString(),
+                                    Date_of_birth = reader["date_of_birth"] == DBNull.Value
+                                        ? null
+                                        : DateOnly.FromDateTime(Convert.ToDateTime(reader["date_of_birth"])),
+                                    Phone_number = reader["phone_number"] == DBNull.Value ? null : reader["phone_number"].ToString(),
+                                    Created_at = Convert.ToDateTime(reader["created_at"]),
+                                    Updated_at = reader["updated_at"] == DBNull.Value
+                                        ? null
+                                        : Convert.ToDateTime(reader["updated_at"]),
+                                    Is_active = Convert.ToBoolean(reader["is_active"])
+                                };
 
                                 connect.Close();
-                                return row;
+                                return user;
 
                             }//end of if
 
@@ -78,52 +82,44 @@ namespace raceday_management_system.Database
 
         }//end of get_user_profile()
 
-
         //method to fetch another user's public profile
-        public Dictionary<string, object>? get_user_public_profile(int user_id)
+        public Users? get_user_public_profile(int user_id)
         {//start of get_user_public_profile()
 
-            //try and catch
             try
             {//start of try
 
-                //using the "using" method to prevent memory leaks
                 using (SqlConnection connect = new SqlConnection(connection_string))
                 {//start of using
 
-                    //open the connection
                     connect.Open();
 
-                    //query
                     string query = @"select user_id, firstname, surname, role, profile_picture_url 
                                      from users 
                                      where user_id = @UserId";
 
-                    //creating an instance to run the query
                     using (SqlCommand cmd = new SqlCommand(query, connect))
                     {//start of using
 
                         cmd.Parameters.AddWithValue("@UserId", user_id);
 
-                        //run reader
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {//start of using
 
                             if (reader.Read())
                             {//start of if
 
-                                var row = new Dictionary<string, object>();
-                                for (int i = 0; i < reader.FieldCount; i++)
-                                {//start of for
-
-                                    row[reader.GetName(i)] = reader.IsDBNull(i)
-                                        ? null!
-                                        : reader.GetValue(i);
-
-                                }//end of for
+                                var user = new Users
+                                {
+                                    User_id = Convert.ToInt32(reader["user_id"]),
+                                    Firstname = reader["firstname"].ToString() ?? "",
+                                    Surname = reader["surname"].ToString() ?? "",
+                                    Role = reader["role"].ToString() ?? "",
+                                    Profile_picture_url = reader["profile_picture_url"] == DBNull.Value ? null : reader["profile_picture_url"].ToString()
+                                };
 
                                 connect.Close();
-                                return row;
+                                return user;
 
                             }//end of if
 
@@ -148,24 +144,19 @@ namespace raceday_management_system.Database
         }//end of get_user_public_profile()
 
         //method to update a user's profile
-        public string update_user_profile( int user_id, string firstname, string surname, string? phone_number, DateOnly? date_of_birth)
+        public string update_user_profile(int user_id, string firstname, string surname, string? phone_number, DateOnly? date_of_birth)
         {//start of update_user_profile()
 
-            //temp message
             string message = "";
 
-            //try and catch
             try
             {//start of try
 
-                //using the "using" method to prevent memory leaks
                 using (SqlConnection connect = new SqlConnection(connection_string))
                 {//start of using
 
-                    //open the connection
                     connect.Open();
 
-                    //query
                     string query = @"update users 
                                      set firstname = @Firstname, 
                                          surname = @Surname, 
@@ -174,23 +165,19 @@ namespace raceday_management_system.Database
                                          updated_at = GETDATE() 
                                      where user_id = @UserId";
 
-                    //creating an instance to run the query
                     using (SqlCommand cmd = new SqlCommand(query, connect))
                     {//start of using
 
                         cmd.Parameters.AddWithValue("@Firstname", firstname);
                         cmd.Parameters.AddWithValue("@Surname", surname);
                         cmd.Parameters.AddWithValue("@PhoneNumber",
-                            string.IsNullOrWhiteSpace(phone_number)
-                                ? (object)DBNull.Value
-                                : phone_number);
+                            string.IsNullOrWhiteSpace(phone_number) ? (object)DBNull.Value : phone_number);
                         cmd.Parameters.AddWithValue("@DateOfBirth",
                             date_of_birth.HasValue
                                 ? date_of_birth.Value.ToDateTime(TimeOnly.MinValue)
                                 : (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@UserId", user_id);
 
-                        //run non-query
                         cmd.ExecuteNonQuery();
 
                     }//end of using
@@ -217,34 +204,27 @@ namespace raceday_management_system.Database
         public string update_profile_picture(int user_id, string picture_url)
         {//start of update_profile_picture()
 
-            //temp message
             string message = "";
 
-            //try and catch
             try
             {//start of try
 
-                //using the "using" method to prevent memory leaks
                 using (SqlConnection connect = new SqlConnection(connection_string))
                 {//start of using
 
-                    //open the connection
                     connect.Open();
 
-                    //query
                     string query = @"update users 
                                      set profile_picture_url = @PictureUrl, 
                                          updated_at = GETDATE() 
                                      where user_id = @UserId";
 
-                    //creating an instance to run the query
                     using (SqlCommand cmd = new SqlCommand(query, connect))
                     {//start of using
 
                         cmd.Parameters.AddWithValue("@PictureUrl", picture_url);
                         cmd.Parameters.AddWithValue("@UserId", user_id);
 
-                        //run non-query
                         cmd.ExecuteNonQuery();
 
                     }//end of using
