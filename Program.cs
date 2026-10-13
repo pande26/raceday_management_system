@@ -1,4 +1,6 @@
+using System.Reflection;
 using System.Text.Json.Serialization;
+using Microsoft.OpenApi.Models;
 using raceday_management_system.Database;
 using raceday_management_system.Services;
 
@@ -25,21 +27,50 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+//add controllers with enum-as-string support
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
+//configure swagger with proper documentation
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    //basic API info
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "raceday_management_system",
+        Version = "v1",
+        Description = "RESTful API for the RaceDay event management system. " +
+                      "Supports Organiser and Participant roles with session-based authentication.",
+        Contact = new OpenApiContact
+        {
+            Name = "RaceDay Team"
+        }
+    });
+
+    //load the XML documentation file so Swagger shows our comments
+    var xml_file = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xml_path = Path.Combine(AppContext.BaseDirectory, xml_file);
+
+    if (File.Exists(xml_path))
+    {
+        options.IncludeXmlComments(xml_path);
+    }
+});
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "raceday_management_system v1");
+        options.DocumentTitle = "raceday_management_system API Documentation";
+    });
 }
 
 app.UseHttpsRedirection();

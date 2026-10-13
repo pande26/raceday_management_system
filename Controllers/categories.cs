@@ -10,10 +10,8 @@ namespace raceday_management_system.Controllers
     public class categories : ControllerBase
     {//start of class
 
-        //dependencies
         private readonly categories_connection _db;
 
-        //constructor
         public categories(categories_connection db)
         {//start of constructor
 
@@ -21,7 +19,6 @@ namespace raceday_management_system.Controllers
 
         }//end of constructor
 
-        //helper: check if organiser
         private bool is_organiser()
         {//start of is_organiser()
 
@@ -29,7 +26,6 @@ namespace raceday_management_system.Controllers
 
         }//end of is_organiser()
 
-        //helper: get logged-in user id
         private int? get_logged_in_user_id()
         {//start of get_logged_in_user_id()
 
@@ -37,7 +33,14 @@ namespace raceday_management_system.Controllers
 
         }//end of get_logged_in_user_id()
 
-        //GET /api/categories/{categoryId}
+        /// <summary>
+        /// Returns a specific category by ID.
+        /// </summary>
+        /// <param name="categoryId">The category ID.</param>
+        /// <returns>200 OK. 404 Not Found. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("{categoryId}")]
         public IActionResult get_category_by_id(int categoryId)
         {//start of get_category_by_id()
@@ -62,7 +65,21 @@ namespace raceday_management_system.Controllers
 
         }//end of get_category_by_id()
 
-        //POST /api/categories/{eventId}
+        /// <summary>
+        /// Creates a new category for an event (Organiser event owner only).
+        /// </summary>
+        /// <param name="eventId">Parent event ID.</param>
+        /// <param name="categoryName">Category name.</param>
+        /// <param name="catDescription">Optional category description.</param>
+        /// <param name="minAge">Optional minimum age.</param>
+        /// <param name="maxAge">Optional maximum age.</param>
+        /// <param name="minDistance">Optional minimum distance.</param>
+        /// <param name="maxDistance">Optional maximum distance.</param>
+        /// <returns>201 Created. 400 Bad Request. 403 Forbidden. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("{eventId}")]
         public IActionResult create_category(int eventId, string categoryName, string? catDescription = null, int? minAge = null, int? maxAge = null, decimal? minDistance = null, decimal? maxDistance = null)
         {//start of create_category()
@@ -83,7 +100,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check that the logged-in user owns the event
             bool owns = _db.owns_event(eventId, user_id.Value);
 
             if (!owns)
@@ -112,7 +128,22 @@ namespace raceday_management_system.Controllers
 
         }//end of create_category()
 
-        //PUT /api/categories/{categoryId}
+        /// <summary>
+        /// Updates an existing category (Organiser event owner only).
+        /// </summary>
+        /// <param name="categoryId">The category ID.</param>
+        /// <param name="categoryName">New category name.</param>
+        /// <param name="catDescription">Optional new description.</param>
+        /// <param name="minAge">Optional new minimum age.</param>
+        /// <param name="maxAge">Optional new maximum age.</param>
+        /// <param name="minDistance">Optional new minimum distance.</param>
+        /// <param name="maxDistance">Optional new maximum distance.</param>
+        /// <returns>200 OK. 400 Bad Request. 403 Forbidden. 404 Not Found. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPut("{categoryId}")]
         public IActionResult update_category(int categoryId, string categoryName, string? catDescription = null, int? minAge = null, int? maxAge = null, decimal? minDistance = null, decimal? maxDistance = null)
         {//start of update_category()
@@ -133,7 +164,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check the category exists
             var category_item = _db.get_category_by_id(categoryId);
 
             if (category_item == null)
@@ -143,7 +173,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check ownership of the parent event
             bool owns = _db.owns_category_event(categoryId, user_id.Value);
 
             if (!owns)
@@ -170,7 +199,16 @@ namespace raceday_management_system.Controllers
 
         }//end of update_category()
 
-        //DELETE /api/categories/{categoryId}
+        /// <summary>
+        /// Deletes a category (Organiser event owner only). Fails if the category has enrolments.
+        /// </summary>
+        /// <param name="categoryId">The category ID.</param>
+        /// <returns>200 OK. 403 Forbidden. 404 Not Found. 409 Conflict if has enrolments. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpDelete("{categoryId}")]
         public IActionResult delete_category(int categoryId)
         {//start of delete_category()
@@ -191,7 +229,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check the category exists
             var category_item = _db.get_category_by_id(categoryId);
 
             if (category_item == null)
@@ -201,7 +238,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check ownership of the parent event
             bool owns = _db.owns_category_event(categoryId, user_id.Value);
 
             if (!owns)
@@ -211,7 +247,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check if the category has enrolments
             int enrol_count = _db.count_category_enrolments(categoryId);
 
             if (enrol_count > 0)

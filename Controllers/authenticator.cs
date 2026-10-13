@@ -28,7 +28,21 @@ namespace raceday_management_system.Controllers
 
         }//end of constructor
 
-        //POST /api/authenticator/register
+        /// <summary>
+        /// Registers a new user account with the specified role (Organiser or Participant).
+        /// The password is hashed with BCrypt before being stored.
+        /// </summary>
+        /// <param name="email">Unique email address.</param>
+        /// <param name="password">Plain-text password (min 6 characters).</param>
+        /// <param name="firstname">User's first name.</param>
+        /// <param name="surname">User's surname.</param>
+        /// <param name="role">Role: Organiser or Participant.</param>
+        /// <param name="dateOfBirth">Optional date of birth.</param>
+        /// <param name="phoneNumber">Optional phone number.</param>
+        /// <returns>201 Created. 400 Bad Request. 409 Conflict if email already exists.</returns>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [HttpPost("register")]
         public IActionResult register_user(string email, string password, string firstname, string surname, roles role, DateOnly? dateOfBirth = null, string? phoneNumber = null)
         {//start of register_user()
@@ -65,14 +79,21 @@ namespace raceday_management_system.Controllers
 
         }//end of register_user()
 
-        //POST /api/authenticator/login
+        /// <summary>
+        /// Authenticates a user and creates a server-side session.
+        /// The session stores the user's id, email, and role.
+        /// </summary>
+        /// <param name="email">User's email address.</param>
+        /// <param name="password">User's plain-text password.</param>
+        /// <returns>200 OK with role and userId. 401 Unauthorized if credentials are invalid.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("login")]
         public IActionResult login_user(string email, string password)
         {//start of login_user()
 
             auth_connection db = new auth_connection();
 
-            //find the user — now returns a Users model
             var user = db.get_user_by_email(email);
 
             if (user == null)
@@ -89,7 +110,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //verify the password
             bool is_valid = _hasher.verify_password(password, user.Password_hash);
 
             if (!is_valid)
@@ -99,10 +119,8 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //update last login
             db.update_last_login(user.User_id);
 
-            //store the session
             HttpContext.Session.SetInt32("User_id", user.User_id);
             HttpContext.Session.SetString("Email", user.Email);
             HttpContext.Session.SetString("Role", user.Role);
@@ -116,7 +134,12 @@ namespace raceday_management_system.Controllers
 
         }//end of login_user()
 
-        //POST /api/authenticator/logout
+        /// <summary>
+        /// Ends the current user session and clears session data.
+        /// </summary>
+        /// <returns>200 OK on success. 401 Unauthorized if no session exists.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("logout")]
         public IActionResult logout_user()
         {//start of logout_user()
@@ -134,7 +157,12 @@ namespace raceday_management_system.Controllers
 
         }//end of logout_user()
 
-        //GET /api/authenticator/current-user
+        /// <summary>
+        /// Returns the currently authenticated user's id, email, and role.
+        /// </summary>
+        /// <returns>200 OK with user info. 401 Unauthorized if not logged in.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("current-user")]
         public IActionResult current_user()
         {//start of current_user()

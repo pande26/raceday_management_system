@@ -10,10 +10,8 @@ namespace raceday_management_system.Controllers
     public class enrolments : ControllerBase
     {//start of class
 
-        //dependencies
         private readonly enrolments_connection _db;
 
-        //constructor
         public enrolments(enrolments_connection db)
         {//start of constructor
 
@@ -21,7 +19,6 @@ namespace raceday_management_system.Controllers
 
         }//end of constructor
 
-        //helper: check if organiser
         private bool is_organiser()
         {//start of is_organiser()
 
@@ -29,7 +26,6 @@ namespace raceday_management_system.Controllers
 
         }//end of is_organiser()
 
-        //helper: check if participant
         private bool is_participant()
         {//start of is_participant()
 
@@ -37,7 +33,6 @@ namespace raceday_management_system.Controllers
 
         }//end of is_participant()
 
-        //helper: get logged-in user id
         private int? get_logged_in_user_id()
         {//start of get_logged_in_user_id()
 
@@ -45,7 +40,13 @@ namespace raceday_management_system.Controllers
 
         }//end of get_logged_in_user_id()
 
-        //GET /api/enrolments/me
+        /// <summary>
+        /// Returns all enrolments for the logged-in Participant.
+        /// </summary>
+        /// <returns>200 OK. 403 Forbidden if not a Participant. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("me")]
         public IActionResult get_my_enrolments()
         {//start of get_my_enrolments()
@@ -72,7 +73,14 @@ namespace raceday_management_system.Controllers
 
         }//end of get_my_enrolments()
 
-        //GET /api/enrolments/me/{eventId}
+        /// <summary>
+        /// Checks whether the logged-in Participant is enrolled in a specific event.
+        /// </summary>
+        /// <param name="eventId">The event ID.</param>
+        /// <returns>200 OK with isEnrolled flag. 403 Forbidden. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("me/{eventId}")]
         public IActionResult check_my_enrolment(int eventId)
         {//start of check_my_enrolment()
@@ -103,7 +111,17 @@ namespace raceday_management_system.Controllers
 
         }//end of check_my_enrolment()
 
-        //POST /api/enrolments/{eventId}
+        /// <summary>
+        /// Enrols the logged-in Participant in an event.
+        /// </summary>
+        /// <param name="eventId">The event ID.</param>
+        /// <param name="categoryId">The category to enrol in.</param>
+        /// <param name="comments">Optional comments.</param>
+        /// <returns>201 Created. 400 Bad Request. 403 Forbidden. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("{eventId}")]
         public IActionResult enrol_in_event(int eventId, int categoryId, string? comments = null)
         {//start of enrol_in_event()
@@ -124,7 +142,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check that the category belongs to the event
             bool category_ok = _db.category_belongs_to_event(categoryId, eventId);
 
             if (!category_ok)
@@ -134,7 +151,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check if already enrolled
             var existing = _db.get_my_enrolment_for_event(user_id.Value, eventId);
 
             if (existing != null)
@@ -144,7 +160,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //create the enrolment
             string message = _db.create_enrolment(user_id.Value, eventId, categoryId, comments);
 
             if (message.Contains("Error"))
@@ -164,7 +179,16 @@ namespace raceday_management_system.Controllers
 
         }//end of enrol_in_event()
 
-        //PUT /api/enrolments/{enrolmentId}/cancel
+        /// <summary>
+        /// Cancels an enrolment (Participant owner only). Cannot cancel after the event starts.
+        /// </summary>
+        /// <param name="enrolmentId">The enrolment ID.</param>
+        /// <returns>200 OK. 403 Forbidden. 404 Not Found. 409 Conflict. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPut("{enrolmentId}/cancel")]
         public IActionResult cancel_enrolment(int enrolmentId)
         {//start of cancel_enrolment()
@@ -178,7 +202,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //find the enrolment
             var enrolment_item = _db.get_enrolment_by_id(enrolmentId);
 
             if (enrolment_item == null)
@@ -188,7 +211,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check ownership
             if (enrolment_item.Participant_id != user_id.Value)
             {//start of if
 
@@ -196,7 +218,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check if the event already started
             bool started = _db.event_has_started(enrolment_item.Event_id);
 
             if (started)
@@ -224,7 +245,17 @@ namespace raceday_management_system.Controllers
 
         }//end of cancel_enrolment()
 
-        //PUT /api/enrolments/{enrolmentId}/status
+        /// <summary>
+        /// Updates the enrolment status (Organiser event owner only).
+        /// </summary>
+        /// <param name="enrolmentId">The enrolment ID.</param>
+        /// <param name="enrStatus">New status: Pending, Confirmed, Completed, or Withdrawn.</param>
+        /// <returns>200 OK. 400 Bad Request. 403 Forbidden. 404 Not Found. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPut("{enrolmentId}/status")]
         public IActionResult update_enrolment_status(int enrolmentId, string enrStatus)
         {//start of update_enrolment_status()
@@ -245,7 +276,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //validate status
             if (enrStatus != "Pending" && enrStatus != "Confirmed" && enrStatus != "Completed" && enrStatus != "Withdrawn")
             {//start of if
 
@@ -253,7 +283,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //find the enrolment
             var enrolment_item = _db.get_enrolment_by_id(enrolmentId);
 
             if (enrolment_item == null)
@@ -263,7 +292,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check ownership of the event
             bool owns = _db.owns_event(enrolment_item.Event_id, user_id.Value);
 
             if (!owns)
@@ -291,7 +319,17 @@ namespace raceday_management_system.Controllers
 
         }//end of update_enrolment_status()
 
-        //PUT /api/enrolments/{enrolmentId}/payment
+        /// <summary>
+        /// Updates the payment status for an enrolment (Organiser event owner only).
+        /// </summary>
+        /// <param name="enrolmentId">The enrolment ID.</param>
+        /// <param name="paymentStatus">New payment status: Pending, Paid, or Refunded.</param>
+        /// <returns>200 OK. 400 Bad Request. 403 Forbidden. 404 Not Found. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPut("{enrolmentId}/payment")]
         public IActionResult update_payment_status(int enrolmentId, string paymentStatus)
         {//start of update_payment_status()
@@ -312,7 +350,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //validate payment status
             if (paymentStatus != "Pending" && paymentStatus != "Paid" && paymentStatus != "Refunded")
             {//start of if
 
@@ -320,7 +357,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //find the enrolment
             var enrolment_item = _db.get_enrolment_by_id(enrolmentId);
 
             if (enrolment_item == null)
@@ -330,7 +366,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check ownership
             bool owns = _db.owns_event(enrolment_item.Event_id, user_id.Value);
 
             if (!owns)
@@ -358,8 +393,14 @@ namespace raceday_management_system.Controllers
 
         }//end of update_payment_status()
 
-        //GET /api/enrolments/event/{eventId}
-        //organiser view of all enrolments for an event
+        /// <summary>
+        /// Returns all enrolments for a specific event (Organiser owner only).
+        /// </summary>
+        /// <param name="eventId">The event ID.</param>
+        /// <returns>200 OK. 403 Forbidden. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("event/{eventId}")]
         public IActionResult get_event_enrolments(int eventId)
         {//start of get_event_enrolments()
@@ -380,7 +421,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check ownership
             bool owns = _db.owns_event(eventId, user_id.Value);
 
             if (!owns)

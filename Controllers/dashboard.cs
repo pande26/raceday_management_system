@@ -10,10 +10,8 @@ namespace raceday_management_system.Controllers
     public class dashboard : ControllerBase
     {//start of class
 
-        //dependencies
         private readonly dashboard_connection _db;
 
-        //constructor
         public dashboard(dashboard_connection db)
         {//start of constructor
 
@@ -21,7 +19,6 @@ namespace raceday_management_system.Controllers
 
         }//end of constructor
 
-        //helper: check if organiser
         private bool is_organiser()
         {//start of is_organiser()
 
@@ -29,7 +26,6 @@ namespace raceday_management_system.Controllers
 
         }//end of is_organiser()
 
-        //helper: check if participant
         private bool is_participant()
         {//start of is_participant()
 
@@ -37,7 +33,6 @@ namespace raceday_management_system.Controllers
 
         }//end of is_participant()
 
-        //helper method to get logged_in user id
         private int? get_logged_in_user_id()
         {//start of get_logged_in_user_id()
 
@@ -45,7 +40,14 @@ namespace raceday_management_system.Controllers
 
         }//end of get_logged_in_user_id()
 
-        //GET /api/dashboard/organiser
+        /// <summary>
+        /// Returns a summary dashboard for the logged-in Organiser.
+        /// Includes total events, total enrolments, upcoming events, and per-event breakdown.
+        /// </summary>
+        /// <returns>200 OK. 403 Forbidden if not an Organiser. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("organiser")]
         public IActionResult get_organiser_dashboard()
         {//start of get_organiser_dashboard()
@@ -66,17 +68,13 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //get counts
             int total_events = _db.count_organiser_events(user_id.Value);
             int total_enrolments = _db.count_organiser_enrolments(user_id.Value);
 
-            //get all events
             var my_events = _db.get_organiser_events(user_id.Value);
 
-            //filter upcoming
             var upcoming = my_events.Where(e => e.Event_date > DateTime.UtcNow).ToList();
 
-            //build the per-event summary
             var events_summary = new List<object>();
             foreach (var ev in my_events)
             {//start of foreach
@@ -104,7 +102,14 @@ namespace raceday_management_system.Controllers
 
         }//end of get_organiser_dashboard()
 
-        //GET /api/dashboard/participant
+        /// <summary>
+        /// Returns a summary dashboard for the logged-in Participant.
+        /// Includes total enrolments, upcoming events, results count, and recent results.
+        /// </summary>
+        /// <returns>200 OK. 403 Forbidden if not a Participant. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("participant")]
         public IActionResult get_participant_dashboard()
         {//start of get_participant_dashboard()
@@ -125,14 +130,11 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //get counts
             int total_enrolments = _db.count_participant_enrolments(user_id.Value);
             int results_count = _db.count_participant_results(user_id.Value);
 
-            //get upcoming events they're enrolled in
             var upcoming = _db.get_participant_upcoming_events(user_id.Value);
 
-            //get recent results (top 5)
             var recent = _db.get_recent_participant_results(user_id.Value, 5);
 
             return Ok(new

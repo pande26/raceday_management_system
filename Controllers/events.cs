@@ -33,7 +33,12 @@ namespace raceday_management_system.Controllers
 
         }//end of get_logged_in_user_id()
 
-        //GET /api/events
+        /// <summary>
+        /// Returns all events in the system.
+        /// </summary>
+        /// <returns>200 OK with array of events. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet]
         public IActionResult get_all_events()
         {//start of get_all_events()
@@ -51,7 +56,12 @@ namespace raceday_management_system.Controllers
 
         }//end of get_all_events()
 
-        //GET /api/events/upcoming
+        /// <summary>
+        /// Returns all upcoming events (date in the future with status Upcoming), sorted by date.
+        /// </summary>
+        /// <returns>200 OK. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("upcoming")]
         public IActionResult get_upcoming_events()
         {//start of get_upcoming_events()
@@ -69,7 +79,13 @@ namespace raceday_management_system.Controllers
 
         }//end of get_upcoming_events()
 
-        //GET /api/events/organiser
+        /// <summary>
+        /// Returns all events created by the logged-in Organiser.
+        /// </summary>
+        /// <returns>200 OK. 403 Forbidden if not an Organiser. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("organiser")]
         public IActionResult get_organiser_events()
         {//start of get_organiser_events()
@@ -96,7 +112,14 @@ namespace raceday_management_system.Controllers
 
         }//end of get_organiser_events()
 
-        //GET /api/events/{eventId}
+        /// <summary>
+        /// Returns a specific event by its ID.
+        /// </summary>
+        /// <param name="eventId">The event ID.</param>
+        /// <returns>200 OK. 404 Not Found. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("{eventId}")]
         public IActionResult get_event_by_id(int eventId)
         {//start of get_event_by_id()
@@ -121,7 +144,14 @@ namespace raceday_management_system.Controllers
 
         }//end of get_event_by_id()
 
-        //GET /api/events/{eventId}/categories
+        /// <summary>
+        /// Returns all categories for a specific event.
+        /// </summary>
+        /// <param name="eventId">The event ID.</param>
+        /// <returns>200 OK with categories. 404 Not Found. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("{eventId}/categories")]
         public IActionResult get_event_categories(int eventId)
         {//start of get_event_categories()
@@ -148,7 +178,15 @@ namespace raceday_management_system.Controllers
 
         }//end of get_event_categories()
 
-        //GET /api/events/{eventId}/enrolments
+        /// <summary>
+        /// Returns all enrolments for a specific event (Organiser owner only).
+        /// </summary>
+        /// <param name="eventId">The event ID.</param>
+        /// <returns>200 OK. 403 Forbidden. 404 Not Found. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("{eventId}/enrolments")]
         public IActionResult get_event_enrolments(int eventId)
         {//start of get_event_enrolments()
@@ -191,7 +229,14 @@ namespace raceday_management_system.Controllers
 
         }//end of get_event_enrolments()
 
-        //GET /api/events/{eventId}/results
+        /// <summary>
+        /// Returns all results for a specific event, sorted by overall position.
+        /// </summary>
+        /// <param name="eventId">The event ID.</param>
+        /// <returns>200 OK with results. 404 Not Found. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("{eventId}/results")]
         public IActionResult get_event_results(int eventId)
         {//start of get_event_results()
@@ -218,7 +263,22 @@ namespace raceday_management_system.Controllers
 
         }//end of get_event_results()
 
-        //POST /api/events
+        /// <summary>
+        /// Creates a new event (Organiser only).
+        /// </summary>
+        /// <param name="eventName">Event name.</param>
+        /// <param name="eventDescription">Event description.</param>
+        /// <param name="eventDate">Event date and time.</param>
+        /// <param name="location">Event location.</param>
+        /// <param name="distance">Distance in kilometres.</param>
+        /// <param name="eventType">Event type: Run, Walk, or Cycle.</param>
+        /// <param name="maxParticipants">Optional max participants.</param>
+        /// <param name="entryFee">Optional entry fee.</param>
+        /// <returns>201 Created. 400 Bad Request. 403 Forbidden. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost]
         public IActionResult create_event(string eventName, string eventDescription, DateTime eventDate, string location, decimal distance, string eventType, int? maxParticipants = null, decimal? entryFee = null)
         {//start of create_event()
@@ -265,7 +325,16 @@ namespace raceday_management_system.Controllers
 
         }//end of create_event()
 
-        //PUT /api/events/{eventId}
+        /// <summary>
+        /// Updates an existing event (Organiser owner only).
+        /// </summary>
+        /// <param name="eventId">Event ID to update.</param>
+        /// <returns>200 OK. 400 Bad Request. 403 Forbidden. 404 Not Found. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPut("{eventId}")]
         public IActionResult update_event(int eventId, string eventName, string eventDescription, DateTime eventDate, string location, decimal distance, string eventType, string eventStatus, int? maxParticipants = null, decimal? entryFee = null)
         {//start of update_event()
@@ -295,7 +364,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //use model property now
             if (event_item.Organiser_id != user_id.Value)
             {//start of if
 
@@ -322,7 +390,15 @@ namespace raceday_management_system.Controllers
 
         }//end of update_event()
 
-        //DELETE /api/events/{eventId}
+        /// <summary>
+        /// Soft-deletes an event by setting its status to Cancelled (Organiser owner only).
+        /// </summary>
+        /// <param name="eventId">Event ID to delete.</param>
+        /// <returns>200 OK. 403 Forbidden. 404 Not Found. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpDelete("{eventId}")]
         public IActionResult delete_event(int eventId)
         {//start of delete_event()
@@ -372,7 +448,17 @@ namespace raceday_management_system.Controllers
 
         }//end of delete_event()
 
-        //POST /api/events/{eventId}/banner
+        /// <summary>
+        /// Sets the banner image URL for an event (Organiser owner only).
+        /// Part 3 will replace this with actual Azure Blob Storage upload.
+        /// </summary>
+        /// <param name="eventId">Event ID.</param>
+        /// <param name="bannerUrl">Banner image URL.</param>
+        /// <returns>200 OK. 403 Forbidden. 404 Not Found. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("{eventId}/banner")]
         public IActionResult set_event_banner(int eventId, string bannerUrl)
         {//start of set_event_banner()

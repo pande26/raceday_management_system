@@ -10,10 +10,8 @@ namespace raceday_management_system.Controllers
     public class results : ControllerBase
     {//start of class
 
-        //dependencies
         private readonly results_connection _db;
 
-        //constructor
         public results(results_connection db)
         {//start of constructor
 
@@ -21,7 +19,6 @@ namespace raceday_management_system.Controllers
 
         }//end of constructor
 
-        //helper: check if organiser
         private bool is_organiser()
         {//start of is_organiser()
 
@@ -29,7 +26,6 @@ namespace raceday_management_system.Controllers
 
         }//end of is_organiser()
 
-        //helper: check if participant
         private bool is_participant()
         {//start of is_participant()
 
@@ -37,7 +33,6 @@ namespace raceday_management_system.Controllers
 
         }//end of is_participant()
 
-        //helper: get logged-in user id
         private int? get_logged_in_user_id()
         {//start of get_logged_in_user_id()
 
@@ -45,7 +40,13 @@ namespace raceday_management_system.Controllers
 
         }//end of get_logged_in_user_id()
 
-        //GET /api/results/me
+        /// <summary>
+        /// Returns all results for the logged-in Participant.
+        /// </summary>
+        /// <returns>200 OK. 403 Forbidden if not a Participant. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("me")]
         public IActionResult get_my_results()
         {//start of get_my_results()
@@ -72,7 +73,13 @@ namespace raceday_management_system.Controllers
 
         }//end of get_my_results()
 
-        // GET /api/results/leaderboard/{eventId}
+        /// <summary>
+        /// Returns the leaderboard for an event, sorted by overall position.
+        /// </summary>
+        /// <param name="eventId">The event ID.</param>
+        /// <returns>200 OK. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("leaderboard/{eventId}")]
         public IActionResult get_leaderboard(int eventId)
         {//start of get_leaderboard()
@@ -90,7 +97,14 @@ namespace raceday_management_system.Controllers
 
         }//end of get_leaderboard()
 
-        // GET /api/results/{resultId}
+        /// <summary>
+        /// Returns a single result by its ID.
+        /// </summary>
+        /// <param name="resultId">The result ID.</param>
+        /// <returns>200 OK. 404 Not Found. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("{resultId}")]
         public IActionResult get_result_by_id(int resultId)
         {//start of get_result_by_id()
@@ -115,7 +129,25 @@ namespace raceday_management_system.Controllers
 
         }//end of get_result_by_id()
 
-        // POST /api/results/{eventId}
+        /// <summary>
+        /// Records a result for an enrolment (Organiser event owner only).
+        /// </summary>
+        /// <param name="eventId">The event ID.</param>
+        /// <param name="enrolmentId">The enrolment to record a result for.</param>
+        /// <param name="finishTime">Finish time in HH:MM:SS format.</param>
+        /// <param name="overallPosition">Overall finishing position.</param>
+        /// <param name="totalFinishers">Total number of finishers.</param>
+        /// <param name="categoryPosition">Optional category position.</param>
+        /// <param name="categoryTotal">Optional total in category.</param>
+        /// <param name="isDisqualified">Optional disqualification flag.</param>
+        /// <param name="disqualificationReason">Optional reason if disqualified.</param>
+        /// <returns>201 Created. 400 Bad Request. 403 Forbidden. 404 Not Found. 409 Conflict. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("{eventId}")]
         public IActionResult record_result(int eventId, int enrolmentId, string finishTime, int overallPosition, int totalFinishers, int? categoryPosition = null, int? categoryTotal = null, bool isDisqualified = false, string? disqualificationReason = null)
         {//start of record_result()
@@ -136,7 +168,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check ownership
             bool owns = _db.owns_event(eventId, user_id.Value);
 
             if (!owns)
@@ -146,7 +177,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check enrolment belongs to event
             bool enrol_ok = _db.enrolment_belongs_to_event(enrolmentId, eventId);
 
             if (!enrol_ok)
@@ -156,7 +186,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check duplicate
             if (_db.result_exists_for_enrolment(enrolmentId))
             {//start of if
 
@@ -164,7 +193,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //parse the finish time
             if (!TimeSpan.TryParse(finishTime, out TimeSpan parsed_time))
             {//start of if
 
@@ -172,7 +200,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //get the participant id
             int? participant_id = _db.get_participant_id_for_enrolment(enrolmentId);
 
             if (participant_id == null)
@@ -203,7 +230,23 @@ namespace raceday_management_system.Controllers
 
         }//end of record_result()
 
-        //PUT /api/results/{resultId}
+        /// <summary>
+        /// Updates an existing result (Organiser event owner only).
+        /// </summary>
+        /// <param name="resultId">The result ID.</param>
+        /// <param name="finishTime">New finish time in HH:MM:SS format.</param>
+        /// <param name="overallPosition">New overall position.</param>
+        /// <param name="totalFinishers">New total finishers.</param>
+        /// <param name="categoryPosition">Optional new category position.</param>
+        /// <param name="categoryTotal">Optional new category total.</param>
+        /// <param name="isDisqualified">Optional disqualification flag.</param>
+        /// <param name="disqualificationReason">Optional reason if disqualified.</param>
+        /// <returns>200 OK. 400 Bad Request. 403 Forbidden. 404 Not Found. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPut("{resultId}")]
         public IActionResult update_result(int resultId, string finishTime, int overallPosition, int totalFinishers, int? categoryPosition = null, int? categoryTotal = null, bool isDisqualified = false, string? disqualificationReason = null)
         {//start of update_result()
@@ -224,7 +267,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //find the result
             var result_item = _db.get_result_by_id(resultId);
 
             if (result_item == null)
@@ -234,7 +276,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check ownership
             bool owns = _db.owns_event(result_item.Event_id, user_id.Value);
 
             if (!owns)
@@ -244,7 +285,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //parse finish time
             if (!TimeSpan.TryParse(finishTime, out TimeSpan parsed_time))
             {//start of if
 
@@ -271,7 +311,15 @@ namespace raceday_management_system.Controllers
 
         }//end of update_result()
 
-        //PUT /api/results/{resultId}/publish
+        /// <summary>
+        /// Marks a result as published (Organiser event owner only).
+        /// </summary>
+        /// <param name="resultId">The result ID.</param>
+        /// <returns>200 OK. 403 Forbidden. 404 Not Found. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPut("{resultId}/publish")]
         public IActionResult publish_result(int resultId)
         {//start of publish_result()
@@ -292,7 +340,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //find the result
             var result_item = _db.get_result_by_id(resultId);
 
             if (result_item == null)
@@ -302,7 +349,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check ownership
             bool owns = _db.owns_event(result_item.Event_id, user_id.Value);
 
             if (!owns)
@@ -329,7 +375,15 @@ namespace raceday_management_system.Controllers
 
         }//end of publish_result()
 
-        //DELETE /api/results/{resultId}
+        /// <summary>
+        /// Deletes a result (Organiser event owner only).
+        /// </summary>
+        /// <param name="resultId">The result ID.</param>
+        /// <returns>200 OK. 403 Forbidden. 404 Not Found. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpDelete("{resultId}")]
         public IActionResult delete_result(int resultId)
         {//start of delete_result()
@@ -350,7 +404,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //find the result
             var result_item = _db.get_result_by_id(resultId);
 
             if (result_item == null)
@@ -360,7 +413,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //check ownership
             bool owns = _db.owns_event(result_item.Event_id, user_id.Value);
 
             if (!owns)
@@ -383,8 +435,14 @@ namespace raceday_management_system.Controllers
 
         }//end of delete_result()
 
-        //GET /api/participants/{participantId}/results
-        //organiser view of participant results
+        /// <summary>
+        /// Returns all results for a specific participant (Organiser only).
+        /// </summary>
+        /// <param name="participantId">The participant's user ID.</param>
+        /// <returns>200 OK. 403 Forbidden. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("/api/participants/{participantId}/results")]
         public IActionResult get_participant_results(int participantId)
         {//start of get_participant_results()

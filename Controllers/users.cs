@@ -26,7 +26,13 @@ namespace raceday_management_system.Controllers
 
         }//end of get_logged_in_user_id()
 
-        //GET /api/users/profile
+        /// <summary>
+        /// Returns the logged-in user's full profile information (excluding password hash).
+        /// </summary>
+        /// <returns>200 OK with profile data. 401 Unauthorized if not logged in. 404 Not Found if user not found.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("profile")]
         public IActionResult get_own_profile()
         {//start of get_own_profile()
@@ -49,7 +55,6 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            //return without the password_hash
             return Ok(new
             {
                 user_id = user.User_id,
@@ -67,7 +72,17 @@ namespace raceday_management_system.Controllers
 
         }//end of get_own_profile()
 
-        //PUT /api/users/profile
+        /// <summary>
+        /// Updates the logged-in user's profile information.
+        /// </summary>
+        /// <param name="firstname">New first name.</param>
+        /// <param name="surname">New surname.</param>
+        /// <param name="phoneNumber">Optional new phone number.</param>
+        /// <param name="dateOfBirth">Optional new date of birth.</param>
+        /// <returns>200 OK on success. 400 Bad Request. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPut("profile")]
         public IActionResult update_own_profile(string firstname, string surname, string? phoneNumber = null, DateOnly? dateOfBirth = null)
         {//start of update_own_profile()
@@ -99,7 +114,15 @@ namespace raceday_management_system.Controllers
 
         }//end of update_own_profile()
 
-        //POST /api/users/profile-picture
+        /// <summary>
+        /// Sets the profile picture URL for the logged-in Participant.
+        /// Part 3 will replace this with actual Azure Blob Storage upload.
+        /// </summary>
+        /// <param name="pictureUrl">URL of the profile picture.</param>
+        /// <returns>200 OK on success. 403 Forbidden if not a Participant. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("profile-picture")]
         public IActionResult set_profile_picture(string pictureUrl)
         {//start of set_profile_picture()
@@ -139,7 +162,14 @@ namespace raceday_management_system.Controllers
 
         }//end of set_profile_picture()
 
-        //GET /api/users/{userId}/profile
+        /// <summary>
+        /// Returns another user's public profile information (limited fields).
+        /// </summary>
+        /// <param name="userId">The user ID to look up.</param>
+        /// <returns>200 OK with public info. 404 Not Found. 401 Unauthorized.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("{userId}/profile")]
         public IActionResult get_user_public_profile(int userId)
         {//start of get_user_public_profile()
