@@ -1,15 +1,15 @@
 ﻿using System.Data.SqlClient;
 using raceday_management_system.Models;
+using raceday_management_system.Database.Interfaces;
 
 namespace raceday_management_system.Database
 {//start of namespace
-    public class enrolments_connection
+    public class enrolments_connection : Ienrolments_connection
     {//start of class
 
         //connection string to connect to the raceday_db
         private readonly string connection_string = @"Data source=(localdb)\api_raceday;Database=raceday_db;Trusted_Connection=True;TrustServerCertificate=True;";
 
-        // ============================================================
         // helper method to map SqlDataReader row to an Enrolments model
         private Enrolments map_enrolment(SqlDataReader reader)
         {//start of map_enrolment()

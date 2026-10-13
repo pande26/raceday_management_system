@@ -1,9 +1,10 @@
 ﻿using System.Data.SqlClient;
 using raceday_management_system.Models;
+using raceday_management_system.Database.Interfaces;
 
 namespace raceday_management_system.Database
 {//start of namespace
-    public class auth_connection
+    public class auth_connection : Iauth_connection
     {//start of class
 
         private readonly string connection_string = @"Data source=(localdb)\api_raceday;Database=raceday_db;Trusted_Connection=True;TrustServerCertificate=True;";

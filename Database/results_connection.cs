@@ -1,9 +1,10 @@
 ﻿using System.Data.SqlClient;
 using raceday_management_system.Models;
+using raceday_management_system.Database.Interfaces;
 
 namespace raceday_management_system.Database
 {//start of namespace
-    public class results_connection
+    public class results_connection : Iresults_connection
     {//start of class
 
         //connection string to connect to the raceday_db
