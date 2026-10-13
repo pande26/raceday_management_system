@@ -11,6 +11,7 @@ builder.Services.AddScoped<events_connection>();
 builder.Services.AddScoped<categories_connection>();
 builder.Services.AddScoped<enrolments_connection>();
 builder.Services.AddScoped<results_connection>();
+builder.Services.AddScoped<dashboard_connection>();
 
 //register services
 builder.Services.AddScoped<password_hasher>();
