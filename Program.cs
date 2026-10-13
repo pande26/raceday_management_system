@@ -10,6 +10,7 @@ builder.Services.AddScoped<users_connection>();
 builder.Services.AddScoped<events_connection>();
 builder.Services.AddScoped<categories_connection>();
 builder.Services.AddScoped<enrolments_connection>();
+builder.Services.AddScoped<results_connection>();
 
 //register services
 builder.Services.AddScoped<password_hasher>();
