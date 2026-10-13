@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="../raceday_management_system.Tests/raceday_management_system.Tests.csproj" Id="cec4d9bf-eb1c-4a21-b612-e84b41cc4aec" />
   <Project Path="raceday_management_system.csproj" />
 </Solution>
