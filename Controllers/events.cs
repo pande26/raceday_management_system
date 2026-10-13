@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using raceday_management_system.Database;
+using raceday_management_system.Database.Interfaces;
 
 namespace raceday_management_system.Controllers
 {//start of namespace
@@ -10,9 +10,9 @@ namespace raceday_management_system.Controllers
     public class events : ControllerBase
     {//start of class
 
-        private readonly events_connection _db;
+        private readonly Ievents_connection _db;
 
-        public events(events_connection db)
+        public events(Ievents_connection db)
         {//start of constructor
 
             _db = db;

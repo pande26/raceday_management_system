@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using raceday_management_system.Database;
+using raceday_management_system.Database.Interfaces;
 using raceday_management_system.Services;
 
 namespace raceday_management_system.Controllers
@@ -19,11 +20,13 @@ namespace raceday_management_system.Controllers
 
         }//end of enum
 
+        private readonly Iauth_connection _db;
         private readonly password_hasher _hasher;
 
-        public authenticator(password_hasher hasher)
+        public authenticator(Iauth_connection db, password_hasher hasher)
         {//start of constructor
 
+            _db = db;
             _hasher = hasher;
 
         }//end of constructor
@@ -47,9 +50,7 @@ namespace raceday_management_system.Controllers
         public IActionResult register_user(string email, string password, string firstname, string surname, roles role, DateOnly? dateOfBirth = null, string? phoneNumber = null)
         {//start of register_user()
 
-            auth_connection db = new auth_connection();
-
-            if (db.email_exists(email))
+            if (_db.email_exists(email))
             {//start of if
 
                 return Conflict(new { message = "Email already registered." });
@@ -58,7 +59,7 @@ namespace raceday_management_system.Controllers
 
             string hashed_password = _hasher.hash_password(password);
 
-            string message = db.store_user_info(
+            string message = _db.store_user_info(
                 email, hashed_password, firstname, surname,
                 role.ToString(), dateOfBirth, phoneNumber
             );
@@ -92,9 +93,7 @@ namespace raceday_management_system.Controllers
         public IActionResult login_user(string email, string password)
         {//start of login_user()
 
-            auth_connection db = new auth_connection();
-
-            var user = db.get_user_by_email(email);
+            var user = _db.get_user_by_email(email);
 
             if (user == null)
             {//start of if
@@ -119,7 +118,7 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            db.update_last_login(user.User_id);
+            _db.update_last_login(user.User_id);
 
             HttpContext.Session.SetInt32("User_id", user.User_id);
             HttpContext.Session.SetString("Email", user.Email);
