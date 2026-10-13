@@ -9,8 +9,8 @@
 - **Participant Registration**: Browse events and enrol with category selection
 - **Results Tracking**: Record and publish race results with finishing positions
 - **Role-Based Access**: Separate interfaces for Organisers and Participants
-- **Cloud Storage**: Azure Blob Storage integration for event banners and profile pictures
-- **Containerized**: Fully Dockerized for easy deployment
+- **Cloud Storage**: Azure Blob Storage integration for event banners and profile pictures (Part 3)
+- **Containerized**: Fully Dockerized for easy deployment (Part 3)
 
 ---
 
@@ -33,24 +33,28 @@
 
 ---
 
+# 📘 PART 1 - System Planning and Database
+
 ## 📁 Project Structure (Part 1)
-RaceDay/
-├── README.md # This file
-├── docs/ # Documentation folder
-│ ├── ERD.png # Entity Relationship Diagram
-│ ├── API-ENDPOINT-PLAN.pdf # Full API endpoint specification
-│ ├── raceday_db.sql # SQL database script with seed data
-│ └── ci-cd-green-build.png # CI/CD green build screenshot
+
+```
+raceday_management_system/
+├── README.md                                    # This file
+├── docs/                                        # Documentation folder
+│   ├── API ENDPOINT PLAN.pdf                    # Original API endpoint plan
+│   ├── API-ENDPOINT-PLAN.pdf                    # Final API endpoint plan
+│   ├── ERD.png                                  # Entity Relationship Diagram
+│   ├── raceday_db.sql                           # SQL database script with seed data
+│   ├── ci-cd-green-build.png                    # Part 2 CI/CD green build screenshot
+│   └── test-results.png                         # Part 2 unit test results screenshot
 └── .github/
-└── workflows/
-└── ci-cd.yml # GitHub Actions CI/CD workflow
-
-
----
+    └── workflows/
+        └── ci-cd.yml                            # GitHub Actions CI/CD workflow
+```
 
 ## 🗄️ Database Schema
 
-### Entities (7 Tables)
+### Entities (6 Tables)
 1. **Users** - Authentication and user information
 2. **Events** - Event/race management
 3. **Categories** - Age/distance categories per event
@@ -59,14 +63,12 @@ RaceDay/
 6. **Event_Images** - Gallery images for events
 
 ### ERD Highlights
-- ✅ Minimum 6 entities included
-- ✅ Primary and Foreign keys clearly identified
+- ✅ 6 entities with clear relationships
+- ✅ Primary and Foreign keys identified
 - ✅ Cardinality indicated for all relationships
 - ✅ CHECK constraints for data validation
 - ✅ Soft delete support (is_active, event_status)
 - ✅ Audit fields (created_at, updated_at)
-
----
 
 ## 🔌 API Endpoint Plan
 
@@ -84,13 +86,11 @@ RaceDay/
 | **TOTAL** | **18** | **8** | **8** | **4** | **38** |
 
 ### Key Endpoints
-- **Authentication**: `/api/auth/register`, `/api/auth/login`, `/api/auth/logout`
+- **Authentication**: `/api/authenticator/register`, `/api/authenticator/login`, `/api/authenticator/logout`
 - **Events**: `/api/events` (CRUD), `/api/events/{id}/banner` (upload)
-- **Categories**: `/api/events/{id}/categories` (CRUD)
-- **Enrolments**: `/api/events/{id}/enrol`, `/api/enrolments/me`
-- **Results**: `/api/events/{id}/results`, `/api/results/me`, `/api/results/{id}/publish`
-
----
+- **Categories**: `/api/categories/{id}` (CRUD)
+- **Enrolments**: `/api/enrolments/{eventId}`, `/api/enrolments/me`
+- **Results**: `/api/results/{eventId}`, `/api/results/me`, `/api/results/{id}/publish`
 
 ## 📊 Database Setup Instructions
 
@@ -112,189 +112,366 @@ RaceDay/
    SELECT * FROM users;
    SELECT * FROM events;
    SELECT * FROM enrolments;
+   ```
 
-4.Sample Data Included
--2 Organisers (Thabo Mokoena, Sarah Van Der Merwe)
--8 Participants with South African names
--4 Events (Comrades, Cycle Tour, Soweto, Two Oceans)
--Categories for each event
--Enrolments with various statuses
--Results with finish times and positions
+4. **Sample Data Included**
+   - 2 Organisers (Thabo Mokoena, Sarah Van Der Merwe)
+   - 8 Participants with South African names
+   - 4 Events (Comrades, Cycle Tour, Soweto, Two Oceans)
+   - Categories for each event
+   - Enrolments with various statuses
+   - Results with finish times and positions
 
-Seed Data Statistics
-Entity	Count	Description
-Organisers	2	Event creators
-Participants	8	Registered users
-Events	4	Upcoming events
-Categories	24	Categories per event
-Enrolments	24	Participant registrations
-Results	11	Race results
-Event Images	8	Gallery images
+### Seed Data Statistics
 
-🔧 CI/CD Pipeline
-GitHub Actions Workflow
-The CI/CD pipeline validates the repository structure for Part 1:
-name: CI/CD Pipeline - RaceDay Part 1
+| Entity | Count | Description |
+|--------|-------|-------------|
+| Organisers | 2 | Event creators |
+| Participants | 8 | Registered users |
+| Events | 4 | Upcoming events |
+| Categories | 24 | Categories per event |
+| Enrolments | 24 | Participant registrations |
+| Results | 11 | Race results |
+| Event Images | 8 | Gallery images |
 
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
+## 🎥 Part 1 Video Presentation
 
-jobs:
-  validate-docs:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Check docs folder exists
-      run: |
-        if [ -d "docs" ]; then
-          echo "✅ docs folder exists"
-        else
-          echo "❌ docs folder not found"
-          exit 1
-        fi
-    
-    - name: Check ERD exists
-      run: |
-        if [ -f "docs/ERD.png" ] || [ -f "docs/ERD.jpeg" ] || [ -f "docs/ERD.pdf" ]; then
-          echo "✅ ERD file found"
-        else
-          echo "❌ ERD file not found"
-          exit 1
-        fi
-    
-    - name: Check API Endpoint Plan exists
-      run: |
-        if [ -f "docs/API-ENDPOINT-PLAN.pdf" ] || [ -f "docs/API-ENDPOINT-PLAN.md" ]; then
-          echo "✅ API Endpoint Plan found"
-        else
-          echo "❌ API Endpoint Plan not found"
-          exit 1
-        fi
-    
-    - name: Check SQL Script exists
-      run: |
-        if [ -f "docs/raceday_db.sql" ]; then
-          echo "✅ SQL Script found"
-        else
-          echo "❌ SQL Script not found"
-          exit 1
-        fi
-    
-    - name: Check README exists
-      run: |
-        if [ -f "README.md" ]; then
-          echo "✅ README.md found"
-        else
-          echo "❌ README.md not found"
-          exit 1
-        fi
-    
-    - name: Check README contains required sections
-      run: |
-        if grep -q "system description\|role" README.md; then
-          echo "✅ README contains system description"
-        else
-          echo "⚠️ README may be missing system description"
-        fi
-        
-        if grep -q "CI/CD\|green build" README.md; then
-          echo "✅ README contains CI/CD section"
-        else
-          echo "⚠️ README may be missing CI/CD section"
-        fi
-        
-        if grep -q "youtube.com\|video" README.md; then
-          echo "✅ README contains video link"
-        else
-          echo "⚠️ README may be missing video link"
-        fi
-    
-    - name: Validate SQL script syntax
-      run: |
-        if grep -q "CREATE TABLE" docs/raceday_db.sql; then
-          echo "✅ SQL script contains CREATE TABLE statements"
-        else
-          echo "❌ SQL script missing CREATE TABLE statements"
-          exit 1
-        fi
-        
-        if grep -q "INSERT INTO" docs/raceday_db.sql; then
-          echo "✅ SQL script contains seed data (INSERT statements)"
-        else
-          echo "⚠️ SQL script may be missing seed data"
-        fi
-    
-    - name: Count entities in SQL script
-      run: |
-        TABLE_COUNT=$(grep -c "CREATE TABLE" docs/raceday_db.sql || true)
-        echo "📊 Found $TABLE_COUNT tables in SQL script"
-        if [ $TABLE_COUNT -ge 6 ]; then
-          echo "✅ SQL script has minimum 6 tables"
-        else
-          echo "❌ SQL script has less than 6 tables"
-          exit 1
-        fi
-    
-    - name: Validation Summary
-      run: |
-        echo "=========================================="
-        echo "✅ CI/CD VALIDATION COMPLETE"
-        echo "=========================================="
-        echo "✅ All required files present!"
-        echo "✅ Part 1 is ready for submission!"
-        echo "=========================================="
+**YouTube Link:** https://youtu.be/krFDeZUgb2M
 
-✅ Successful Build Screenshot
-<img width="683" height="170" alt="Screenshot 2026-09-03 132645" src="https://github.com/user-attachments/assets/94bbb3b8-60d4-40dc-acae-f57b3b091f43" />
-Figure: Successful CI/CD pipeline validation showing all checks passed
+**Video Content:**
+- 📊 ERD Walkthrough
+- 📝 API Endpoint Plan
+- 🗄️ SQL Script Demonstration in SSMS
+- ✅ Validation of all required components
 
-🎥 Video Presentation
-Part 1 - System Planning and Database
-YouTube Link: https://youtu.be/krFDeZUgb2M
+## 📚 Part 1 Deliverables Checklist
 
-Video Content Overview
-📊 ERD Walkthrough: Explanation of 6 entities, relationships, and design decisions
-📝 API Endpoint Plan: Overview of all 38 endpoints and role-based access
-🗄️ SQL Script Demonstration: Live execution in SSMS
-✅ Validation: Verification of all required components
+| Deliverable | Status | Location |
+|-------------|--------|----------|
+| Entity Relationship Diagram | ✅ | `/docs/ERD.png` |
+| API Endpoint Plan | ✅ | `/docs/API-ENDPOINT-PLAN.pdf` |
+| SQL Database Script | ✅ | `/docs/raceday_db.sql` |
+| README.md | ✅ | `/README.md` |
+| CI/CD Workflow | ✅ | `/.github/workflows/ci-cd.yml` |
+| Green Build Screenshot | ✅ | Included in README |
+| Video Presentation | ✅ | https://youtu.be/krFDeZUgb2M |
 
-📚 Part 1 Deliverables Checklist
-Deliverable	Status	Location
-Entity Relationship Diagram	✅	/docs/ERD.png
-API Endpoint Plan	✅	/docs/API-ENDPOINT-PLAN.pdf
-SQL Database Script	✅	/docs/raceday_db.sql
-README.md	✅	/README.md
-CI/CD Workflow	✅	/.github/workflows/ci-cd.yml
-Green Build Screenshot	✅	Included in README
-Video Presentation	✅	https://youtu.be/krFDeZUgb2M
+---
 
-🔗 GitHub Repository
-Repository Link: https://github.com/pande26/raceday_management_system.git
+# 🚀 PART 2 - RESTful API Development
 
-📊 Commit Statistics
-Part	Minimum Required	Actual Commits	Status
-Part 1	20	25+	✅
-🛠️ Technology Stack (Full Project)
-Layer	Technology
-Frontend	ASP.NET Core MVC, Bootstrap
-Backend API	ASP.NET Core Web API (C#)
-ORM	Entity Framework Core (Code-First)
-Database	SQL Server (SSMS)
-Cloud Storage	Azure Blob Storage
-Testing	xUnit/NUnit Unit Tests
-CI/CD	GitHub Actions
-Containerization	Docker
+## 📋 Overview
 
-📝 Version History
-Version	Date	Changes
-1.0	2026-09-03	Initial Part 1 submission
+The RaceDay API is built with **ASP.NET Core 8.0** and uses **ADO.NET** for direct database access. The API implements **session-based authentication**, **role-based access control** (Organiser vs Participant), and exposes **39 RESTful endpoints** across 7 controllers.
 
-👨‍💻 Author
-Pandelani
-GitHub: @pande26
+### Key Features
+- **Session-Based Authentication**: Server-side sessions with 30-minute timeout
+- **BCrypt Password Hashing**: Secure password storage using BCrypt.Net-Next
+- **Role-Based Access Control**: Enforced at the controller level
+- **Ownership Validation**: Organisers can only modify their own resources
+- **Swagger Documentation**: Full XML documentation with response codes
+- **Unit Tests**: 18 tests passing locally and in CI/CD
+
+---
+
+## 🛠️ Part 2 Technology Stack
+
+| Layer | Technology |
+|-------|------------|
+| Framework | ASP.NET Core 8.0 Web API |
+| Data Access | ADO.NET (`System.Data.SqlClient`) |
+| Authentication | Session-based with BCrypt.Net-Next |
+| API Docs | Swashbuckle.AspNetCore (Swagger) |
+| Testing | xUnit + Moq |
+| CI/CD | GitHub Actions |
+
+---
+
+## 📁 Part 2 Project Structure
+
+```
+raceday_management_system/
+├── Controllers/                          # 7 API controllers
+│   ├── authenticator.cs                  # Register, login, logout, current-user
+│   ├── users.cs                          # Profile viewing/updating
+│   ├── events.cs                         # Event CRUD + nested resources
+│   ├── categories.cs                     # Category CRUD
+│   ├── enrolments.cs                     # Enrolment management
+│   ├── results.cs                        # Result recording and leaderboard
+│   └── dashboard.cs                      # Organiser & Participant dashboards
+├── Database/                             # ADO.NET data helpers
+│   ├── Interfaces/                       # 7 interfaces (for testing with Moq)
+│   │   ├── Iauth_connection.cs
+│   │   ├── Icategories_connection.cs
+│   │   ├── Idashboard_connection.cs
+│   │   ├── Ienrolments_connection.cs
+│   │   ├── Ievents_connection.cs
+│   │   ├── Iresults_connection.cs
+│   │   └── Iusers_connection.cs
+│   ├── auth_connection.cs                # Auth DB operations
+│   ├── users_connection.cs               # User DB operations
+│   ├── events_connection.cs              # Event DB operations
+│   ├── categories_connection.cs          # Category DB operations
+│   ├── enrolments_connection.cs          # Enrolment DB operations
+│   ├── results_connection.cs             # Result DB operations
+│   └── dashboard_connection.cs           # Dashboard DB operations
+├── Models/                               # 6 entity models
+│   ├── Categories.cs
+│   ├── Enrolments.cs
+│   ├── Event_images.cs
+│   ├── Events.cs
+│   ├── Results.cs
+│   └── Users.cs
+├── Services/
+│   └── password_hasher.cs                # BCrypt password hashing
+├── raceday_management_system.Tests/      # Unit test project (xUnit + Moq)
+│   ├── AuthControllerTests.cs            # 5 auth tests
+│   ├── EnrolmentsControllerTests.cs      # 4 enrolment tests
+│   ├── EventsControllerTests.cs          # 4 event tests
+│   ├── RoleAccessTests.cs                # 5 role-based access tests
+│   ├── FakeSession.cs                    # Fake session helper
+│   ├── SessionHelper.cs                  # HTTP context helper
+│   └── raceday_management_system.Tests.csproj
+└── Program.cs                            # DI registration and pipeline config
+```
+
+---
+
+## 🔌 Part 2 API Endpoints (39 Total)
+
+### Authentication (`/api/authenticator`)
+| Method | Route | Role |
+|--------|-------|------|
+| POST | `/register` | Public |
+| POST | `/login` | Public |
+| POST | `/logout` | Logged in |
+| GET | `/current-user` | Logged in |
+
+### User Profile (`/api/users`)
+| Method | Route | Role |
+|--------|-------|------|
+| GET | `/profile` | Any logged in |
+| PUT | `/profile` | Any logged in |
+| POST | `/profile-picture` | Participant |
+| GET | `/{userId}/profile` | Any logged in |
+
+### Events (`/api/events`)
+| Method | Route | Role |
+|--------|-------|------|
+| GET | `/` | Any logged in |
+| GET | `/upcoming` | Any logged in |
+| GET | `/organiser` | Organiser |
+| GET | `/{eventId}` | Any logged in |
+| GET | `/{eventId}/categories` | Any logged in |
+| GET | `/{eventId}/enrolments` | Organiser (owner) |
+| GET | `/{eventId}/results` | Any logged in |
+| POST | `/` | Organiser |
+| PUT | `/{eventId}` | Organiser (owner) |
+| DELETE | `/{eventId}` | Organiser (owner) |
+| POST | `/{eventId}/banner` | Organiser (owner) |
+
+### Categories (`/api/categories`)
+| Method | Route | Role |
+|--------|-------|------|
+| GET | `/{categoryId}` | Any logged in |
+| POST | `/{eventId}` | Organiser (owner) |
+| PUT | `/{categoryId}` | Organiser (owner) |
+| DELETE | `/{categoryId}` | Organiser (owner) |
+
+### Enrolments (`/api/enrolments`)
+| Method | Route | Role |
+|--------|-------|------|
+| GET | `/me` | Participant |
+| GET | `/me/{eventId}` | Participant |
+| POST | `/{eventId}` | Participant |
+| PUT | `/{enrolmentId}/cancel` | Participant (owner) |
+| PUT | `/{enrolmentId}/status` | Organiser (owner) |
+| PUT | `/{enrolmentId}/payment` | Organiser (owner) |
+| GET | `/event/{eventId}` | Organiser (owner) |
+
+### Results (`/api/results`)
+| Method | Route | Role |
+|--------|-------|------|
+| GET | `/me` | Participant |
+| GET | `/leaderboard/{eventId}` | Any logged in |
+| GET | `/{resultId}` | Any logged in |
+| POST | `/{eventId}` | Organiser (owner) |
+| PUT | `/{resultId}` | Organiser (owner) |
+| PUT | `/{resultId}/publish` | Organiser (owner) |
+| DELETE | `/{resultId}` | Organiser (owner) |
+| GET | `/api/participants/{participantId}/results` | Organiser |
+
+### Dashboard (`/api/dashboard`)
+| Method | Route | Role |
+|--------|-------|------|
+| GET | `/organiser` | Organiser |
+| GET | `/participant` | Participant |
+
+See the full endpoint plan in `docs/API-ENDPOINT-PLAN.pdf`.
+
+---
+
+## 🧪 Unit Tests (18 Total)
+
+All tests pass locally and through the GitHub Actions CI/CD workflow.
+
+### Test Project Structure (`raceday_management_system.Tests`)
+
+```
+raceday_management_system.Tests/
+├── Dependencies/                         # NuGet packages (xUnit, Moq, etc.)
+├── AuthControllerTests.cs                # 5 authentication tests
+├── EnrolmentsControllerTests.cs          # 4 enrolment tests
+├── EventsControllerTests.cs              # 4 event management tests
+├── RoleAccessTests.cs                    # 5 role-based access tests
+├── FakeSession.cs                        # ISession mock implementation
+├── SessionHelper.cs                      # HttpContext factory for tests
+└── raceday_management_system.Tests.csproj
+```
+
+### Test Coverage
+
+| Test Group | Count | Purpose |
+|-----------|-------|---------|
+| `AuthControllerTests` | 5 | Register/login success and failure scenarios |
+| `EventsControllerTests` | 4 | Event creation, role checks, invalid data |
+| `EnrolmentsControllerTests` | 4 | Enrol, duplicate prevention, invalid category |
+| `RoleAccessTests` | 5 | Cross-role dashboard & event access |
+
+### Testing Framework
+
+- **xUnit**: Test framework
+- **Moq**: Mocking library for interfaces
+- **FakeSession**: Custom `ISession` implementation to simulate user login
+- **SessionHelper**: Builds `HttpContext` with preset session values
+
+### Test Results
+
+![Tests Passing](docs/test-results.png)
+
+**Local test run:** `Test summary: total: 18, failed: 0, succeeded: 18, skipped: 0`
+
+---
+
+## 🔧 Part 2 CI/CD Pipeline
+
+### GitHub Actions Workflow
+
+Every push to `main` triggers a workflow that:
+1. Restores NuGet packages
+2. Builds the solution in Release mode
+3. Runs all 18 unit tests
+4. Reports green build status
+
+### Green Build Screenshot
+
+![CI/CD Pipeline - Part 2](docs/ci-cd-green-build.png)
+
+**Average build time:** ~38 seconds ✅
+
+---
+
+## 🎥 Part 2 Video Presentation
+
+**YouTube Link:** [To be added]
+
+**Video Content:**
+- 🎯 API architecture walkthrough
+- 🔐 Authentication flow and session management
+- 🛠️ All 7 controllers demonstrated
+- 🧪 Unit tests running locally and in CI/CD
+- ✅ Swagger UI tour
+
+---
+
+## 📚 Part 2 Deliverables Checklist
+
+| Deliverable | Status | Location |
+|-------------|--------|----------|
+| ASP.NET Core Web API | ✅ | `/Controllers/` |
+| ADO.NET Data Access | ✅ | `/Database/` |
+| Interfaces for Testing | ✅ | `/Database/Interfaces/` |
+| Session-Based Authentication | ✅ | `authenticator.cs` |
+| BCrypt Password Hashing | ✅ | `Services/password_hasher.cs` |
+| Role-Based Access Control | ✅ | All controllers |
+| Swagger Documentation | ✅ | Configured in `Program.cs` |
+| Unit Test Project | ✅ | `raceday_management_system.Tests/` |
+| 18 Unit Tests | ✅ | 4 test files + 2 helpers |
+| CI/CD Workflow | ✅ | `/.github/workflows/ci-cd.yml` |
+| Green Build Screenshot | ✅ | `docs/ci-cd-green-build.png` |
+| Test Results Screenshot | ✅ | `docs/test-results.png` |
+| Video Presentation | ⏳ | To be recorded |
+
+---
+
+## 📊 Commit Statistics
+
+| Part | Minimum Required | Actual Commits | Status |
+|------|------------------|----------------|--------|
+| Part 1 | 20 | 25+ | ✅ |
+| Part 2 | 20 | 20+ | ✅ |
+
+---
+
+## 🛠️ Technology Stack (Full Project)
+
+| Layer | Technology |
+|-------|------------|
+| Frontend | ASP.NET Core MVC, Bootstrap (Part 3) |
+| Backend API | ASP.NET Core Web API (C#) |
+| Data Access | ADO.NET (`System.Data.SqlClient`) |
+| Database | SQL Server (SSMS) |
+| Authentication | Session-based + BCrypt |
+| Cloud Storage | Azure Blob Storage (Part 3) |
+| Testing | xUnit + Moq |
+| CI/CD | GitHub Actions |
+| Containerization | Docker (Part 3) |
+
+---
+
+## 📝 Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.0 | 2026-09-03 | Initial Part 1 submission |
+| 2.0 | 2026-10-13 | Part 2 - RESTful API with authentication, 39 endpoints, and 18 unit tests |
+
+---
+
+## 🔗 GitHub Repository
+
+**Repository Link:** https://github.com/pande26/raceday_management_system.git
+
+---
+
+## 👨‍💻 Author
+
+**Pandelani**
+- GitHub: [@pande26](https://github.com/pande26)
+
+---
+
+## 📄 License
+
+This project is created for academic purposes as part of the Portfolio of Evidence (POE) for the Software Development course.
+
+---
+
+## 🙏 Acknowledgements
+
+- South African road events community (Comrades Marathon, Cape Town Cycle Tour, Soweto Marathon, Two Oceans Marathon)
+- Lecturers and mentors providing guidance throughout the project
+
+---
+
+## 🚀 Next Steps
+
+### Part 3 - MVC Web Application
+- Build ASP.NET Core MVC frontend
+- Consume the Part 2 API
+- Integrate Azure Blob Storage
+- Containerize with Docker
+
+**✅ Part 1 - System Planning and Database - COMPLETE**
+
+**✅ Part 2 - RESTful API Development - COMPLETE**
