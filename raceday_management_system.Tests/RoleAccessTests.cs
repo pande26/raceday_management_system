@@ -9,7 +9,7 @@ namespace raceday_management_system.Tests
     public class RoleAccessTests
     {//start of class
 
-        //Test 1: Organiser cannot access participant dashboard (403)
+        //Organiser cannot access participant dashboard (403)
         [Fact]
         public void organiser_cannot_access_participant_dashboard()
         {//start of test
@@ -31,7 +31,7 @@ namespace raceday_management_system.Tests
 
         }//end of test
 
-        //Test 2: Participant cannot access organiser dashboard (403)
+        //Participant cannot access organiser dashboard (403)
         [Fact]
         public void participant_cannot_access_organiser_dashboard()
         {//start of test
@@ -53,7 +53,7 @@ namespace raceday_management_system.Tests
 
         }//end of test
 
-        //Test 3: Unauthenticated user gets 401 on organiser dashboard
+        //Unauthenticated user gets 401 on organiser dashboard
         [Fact]
         public void unauthenticated_gets_401_on_organiser_dashboard()
         {//start of test
@@ -74,7 +74,7 @@ namespace raceday_management_system.Tests
 
         }//end of test
 
-        //Test 4: Participant cannot create event (403)
+        //Participant cannot create event (403)
         [Fact]
         public void participant_cannot_create_event()
         {//start of test
@@ -98,7 +98,7 @@ namespace raceday_management_system.Tests
 
         }//end of test
 
-        //Test 5: Participant cannot access organiser events (403)
+        //Participant cannot access organiser events (403)
         [Fact]
         public void participant_cannot_access_organiser_events()
         {//start of test

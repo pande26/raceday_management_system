@@ -12,7 +12,7 @@ namespace raceday_management_system.Tests
     public class AuthControllerTests
     {//start of class
 
-        //Test 1: Register with valid data returns 201 Created
+        //Register with valid data returns 201 Created
         [Fact]
         public void register_with_valid_data_returns_201()
         {//start of test
@@ -39,7 +39,7 @@ namespace raceday_management_system.Tests
 
         }//end of test
 
-        //Test 2: Register with duplicate email returns 409 Conflict
+        //Register with duplicate email returns 409 Conflict
         [Fact]
         public void register_with_duplicate_email_returns_409()
         {//start of test
@@ -61,7 +61,7 @@ namespace raceday_management_system.Tests
 
         }//end of test
 
-        //Test 3: Login with non-existent user returns 401 Unauthorized
+        //login with non-existent user returns 401 Unauthorized
         [Fact]
         public void login_with_invalid_user_returns_401()
         {//start of test
@@ -87,7 +87,7 @@ namespace raceday_management_system.Tests
 
         }//end of test
 
-        //Test 4: Login with wrong password returns 401 Unauthorized
+        //Login with wrong password returns 401 Unauthorized
         [Fact]
         public void login_with_wrong_password_returns_401()
         {//start of test
@@ -123,7 +123,7 @@ namespace raceday_management_system.Tests
 
         }//end of test
 
-        //Test 5: Login with correct password returns 200 OK
+        //Login with correct password returns 200 OK
         [Fact]
         public void login_with_correct_password_returns_200()
         {//start of test

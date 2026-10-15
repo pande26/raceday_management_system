@@ -10,7 +10,7 @@ namespace raceday_management_system.Tests
     public class EnrolmentsControllerTests
     {//start of class
 
-        //Test 1: Participant can enrol in event (201)
+        //Participant can enrol in event (201)
         [Fact]
         public void participant_can_enrol()
         {//start of test
@@ -36,7 +36,7 @@ namespace raceday_management_system.Tests
 
         }//end of test
 
-        //Test 2: Organiser cannot enrol (403)
+        //Organiser cannot enrol (403)
         [Fact]
         public void organiser_cannot_enrol()
         {//start of test
@@ -58,7 +58,7 @@ namespace raceday_management_system.Tests
 
         }//end of test
 
-        //Test 3: Duplicate enrolment is rejected (400)
+        //Duplicate enrolment is rejected (400)
         [Fact]
         public void duplicate_enrolment_rejected()
         {//start of test
@@ -90,7 +90,7 @@ namespace raceday_management_system.Tests
 
         }//end of test
 
-        //Test 4: Invalid category for event returns 400
+        //Invalid category for event returns 400
         [Fact]
         public void invalid_category_returns_400()
         {//start of test

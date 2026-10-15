@@ -9,7 +9,7 @@ namespace raceday_management_system.Tests
     public class EventsControllerTests
     {//start of class
 
-        //Test 1: Participant cannot create event (403)
+        //Participant cannot create event (403)
         [Fact]
         public void participant_cannot_create_event()
         {//start of test
@@ -33,7 +33,7 @@ namespace raceday_management_system.Tests
 
         }//end of test
 
-        //Test 2: Organiser can create event (201)
+        //Organiser can create event (201)
         [Fact]
         public void organiser_can_create_event()
         {//start of test
@@ -63,7 +63,7 @@ namespace raceday_management_system.Tests
 
         }//end of test
 
-        //Test 3: Unauthenticated user cannot view events (401)
+        //Unauthenticated user cannot view events (401)
         [Fact]
         public void unauthenticated_cannot_view_events()
         {//start of test
@@ -84,7 +84,7 @@ namespace raceday_management_system.Tests
 
         }//end of test
 
-        //Test 4: Invalid event type returns 400 Bad Request
+        //Invalid event type returns 400 Bad Request
         [Fact]
         public void invalid_event_type_returns_400()
         {//start of test

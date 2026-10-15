@@ -7,6 +7,7 @@ namespace raceday_management_system.Database
     public class events_connection : Ievents_connection
     {//start of class
 
+        //connection string to connect to the raceday_db
         private readonly string connection_string = @"Data source=(localdb)\api_raceday;Database=raceday_db;Trusted_Connection=True;TrustServerCertificate=True;";
 
         // helper method to map a SqlDataReader row to an Events model
