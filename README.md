@@ -373,7 +373,7 @@ Every push to `main` triggers a workflow that:
 
 ## 🎥 Part 2 Video Presentation
 
-**YouTube Link:** [To be added]
+**YouTube Link:** [https://youtu.be/qJepWK_j-eY]
 
 **Video Content:**
 - 🎯 API architecture walkthrough
@@ -400,7 +400,7 @@ Every push to `main` triggers a workflow that:
 | CI/CD Workflow | ✅ | `/.github/workflows/ci-cd.yml` |
 | Green Build Screenshot | ✅ | `docs/ci-cd-green-build.png` |
 | Test Results Screenshot | ✅ | `docs/test-results.png` |
-| Video Presentation | ⏳ | To be recorded |
+| Video Presentation | ✅ | `https://youtu.be/qJepWK_j-eY` |
 
 ---
 
